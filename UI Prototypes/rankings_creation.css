@@ -1,21 +1,7 @@
-.drop-btn{
-    width: 10%;
-    height: 50px;
-    position: absolute;
-    right: 1px;
+.main-header{
+    text-align: center;
 }
 
-.top-bar{
-    width: 30%;
-    height: 50px;
-    
-}
-
-.button-grp{
-    width: 90%;
-}
-
-/* Navbar container */
 .pref-drop-div {
     overflow: hidden;
     background-color: #333;

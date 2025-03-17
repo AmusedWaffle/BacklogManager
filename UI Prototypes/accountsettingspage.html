@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    
+    <style>.account-buttons {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .account-buttons button {
+            padding: 10px;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            background: #6c757d;
+        }
+        .account-buttons button:hover {
+            background: #5a6268;
+        }
+.top-buttons {
+            position: fixed;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            top: 0;
+            background: #ddd;
+            padding: 10px;
+            gap: 10px;
+        }
+        .top-buttons button {
+            padding: 10px;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            background: #6c757d;
+        }
+        .top-buttons button:hover {
+            background: #5a6268;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+        .user-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 300px;
+            margin-top: 60px;
+        }
+        .username {
+            font-size: 24px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-buttons">
+        <button onclick="location.href='homepage.html'">Homepage</button>
+        <button onclick="location.href='gamelibrary.html'">Game Library</button>
+        <button onclick="location.href='create-ranking.html'">Create Ranking</button>
+    </div>
+    <div class="user-container">
+        <p class="username" id="username">Danny Zheng</p>
+        
+        <div class="account-buttons">
+            <script>
+                //make buttons change what is displayed
+            </script>
+            <button onclick="location.href='general-account-settings.html'">General Account Settings</button>
+            <button onclick="location.href='user-preferences.html'">User Preferences</button>
+            <button onclick="location.href='linked-accounts.html'">Linked Account</button>
+        </div>
+    </div>
+    <script>
+        //document.getElementById("username").textContent = localStorage.getItem("username") || "Danny Zheng";
+    </script>
+</body>
+</html>

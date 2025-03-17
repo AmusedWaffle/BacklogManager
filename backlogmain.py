@@ -10,7 +10,7 @@ CORS(app)
 
 #Connection: MAKE SURE TO REPLACE USERNAME:PASSWORD WITH THE ONE SET UP ON YOUR OWN DEVICE
 #SSH Tunnel Forward to Local Port: ssh -L 5433:127.0.0.1:5432 USERNAME@128.113.126.87
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://zhengd3:1234@127.0.0.1:5433/backlog_manager'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://knighk4:1234@localhost/backlog_manager'
 
 db = SQLAlchemy(app)
 
@@ -53,10 +53,15 @@ class Preferences(db.Model):
 with app.app_context():
     db.create_all()
 
+#Allow requests from frontend
+CORS(app, resources={r"/*": {"origins": "http://128.113.126.87:3000"}})
+
 #API route to register a new user: http://127.0.0.1:5000/register
+
 @app.route('/register', methods=['POST'])
 def register():
     data = request.json
+    print(data)
     existing_user = Users.query.filter((Users.email == data['email'])).first()
     if existing_user:
         return jsonify({"error": "User already exists!"}), 400
@@ -76,4 +81,4 @@ def add_game():
     rawg_id = data['game']
 
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(host="0.0.0.0", port=5000, debug=False)
