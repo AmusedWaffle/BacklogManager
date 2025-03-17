@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import hashlib
+import requests
 #pip install flask flask_sqlalchemy psycopg2 flask_cors
 
 app = Flask(__name__)
@@ -13,6 +14,16 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://zhengd3:1234@127.0.0.1:543
 
 db = SQLAlchemy(app)
 
+API_KEY = "1af69e1cf8664df59d23e49cd5aca2ea"
+
+'''
+example use of RAWG API call
+url = f"https://api.rawg.io/api/platforms?key={API_KEY}"
+response = requests.get(url)
+data = response.json()
+print(data)'
+'''
+
 #Define basic users table
 class Users(db.Model):
     email = db.Column(db.String(100), unique=True, nullable=False, primary_key=True)
@@ -21,7 +32,14 @@ class Users(db.Model):
 
     def __repr__(self):
         return f'<User {self.email}>'
+    
+    def set_password(self, password: str):
+        """Hashes and stores the password."""
+        self.password_hash = hashlib.sha256(password.encode()).hexdigest()
 
+    def verify_password(self, input_password: str) -> bool:
+        """Checks if the given password matches the stored hash."""
+        return self.password_hash == hashlib.sha256(input_password.encode()).hexdigest()
 
 #Temporary table
 class Preferences(db.Model):
@@ -43,21 +61,19 @@ def register():
     if existing_user:
         return jsonify({"error": "User already exists!"}), 400
 
-    new_user = Users(email=data['email'], name=data['name'], password=hash_password(data['password']))
+    new_user = Users(email=data['email'], name=data['name'])
+    new_user.set_password(data['password'])
     db.session.add(new_user)
     db.session.commit()
     
     return jsonify({"message": "User registered successfully!"}), 201
 
-
-def hash_password(password: str) -> str:
-    """Hashes a password using SHA-256."""
-    return hashlib.sha256(password.encode()).hexdigest()
-
-def verify_password(input_password: str, stored_hash: str) -> bool:
-    """Verifies if the input password matches the stored hash."""
-    return hash_password(input_password) == stored_hash
-
+#Temp API route to add game for a user: http://127.0.0.1:5000/add_game
+@app.route('/add_game', methods=['POST'])
+def add_game():
+    data = request.json
+    user_id = data['email']
+    rawg_id = data['game']
 
 if __name__ == '__main__':
     app.run(debug=False)
