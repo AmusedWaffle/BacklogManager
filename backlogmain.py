@@ -1,8 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
-import hashlib
-import requests
+import hashlib , requests, uuid
 #pip install flask flask_sqlalchemy psycopg2 flask_cors
 
 app = Flask(__name__)
@@ -29,6 +28,7 @@ class Users(db.Model):
     email = db.Column(db.String(100), unique=True, nullable=False, primary_key=True)
     name = db.Column(db.String(100), unique=True, nullable=False)
     password_hash = db.Column(db.String(200), nullable=False)
+    session_token = db.Column(db.String(200), unique=True, nullable=True)
 
     def __repr__(self):
         return f'<User {self.email}>'
@@ -73,12 +73,31 @@ def register():
     
     return jsonify({"message": "User registered successfully!"}), 201
 
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    user = Users.query.filter_by(email=data['email']).first()
+
+    if user and user.verify_password(data['password']):
+        # Generate a new session token and store it in the database
+        token = generate_token()
+        user.session_token = token
+        db.session.commit()
+
+        return jsonify({'message': 'Login successful', 'token': token}), 200
+
+    return jsonify({'error': 'Invalid email or password'}), 401
+
 #Temp API route to add game for a user: http://127.0.0.1:5000/add_game
 @app.route('/add_game', methods=['POST'])
 def add_game():
     data = request.json
     user_id = data['email']
     rawg_id = data['game']
+
+def generate_token():
+    """Generate a random session token."""
+    return str(uuid.uuid4())
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000, debug=False)
