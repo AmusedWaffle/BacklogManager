@@ -68,10 +68,12 @@ def register():
 
     new_user = Users(email=data['email'], name=data['name'])
     new_user.set_password(data['password'])
+    token = generate_token()
     db.session.add(new_user)
+    new_user.session_token = token
     db.session.commit()
     
-    return jsonify({"message": "User registered successfully!"}), 201
+    return jsonify({'token': token}), 201
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -84,7 +86,7 @@ def login():
         user.session_token = token
         db.session.commit()
 
-        return jsonify({'message': 'Login successful', 'token': token}), 200
+        return jsonify({'token': token}), 200
 
     return jsonify({'error': 'Invalid email or password'}), 401
 
