@@ -5,22 +5,24 @@ import Link from "next/link";
 import "../styles/homepage.css";
 
 const HomePage = () => {
+    const navigateToLogin = () => {
+        window.location.href = "/login";
+    }
+
+    const navigateToCreateAccount = () => {
+        window.location.href = "/create-account";
+    }
+    
   return (
     <div className="homepage">
-        <div className="top-buttons">
-            <button>Game Library</button>
-            <button>Create Ranking</button>
-        </div>
 
         <div className="login-container">
             <h2>Backlog Manager</h2>
             <div className="button-container">
 
-                <Link href="/create-account" passHref>
-                    <button className="signup-btn">Create Account</button>
-                </Link>
+                <button onClick={navigateToCreateAccount} className="signup-btn">Create Account</button>
             
-                <button className="login-btn">Login</button>
+                <button onClick={navigateToLogin} className="login-btn">Login</button>
             </div>
         </div>
 

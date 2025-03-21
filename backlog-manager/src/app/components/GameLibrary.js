@@ -1,29 +1,28 @@
+// components/GameLibrary.js
 "use client";
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import "../styles/game_library.css";
 import "../styles/top-buttons.css";
 
-function changeSort(){
-    //fill in later
+function changeSort() {
+  //fill in later - ignore for now
 }
 
-function addGamePopUp(){
-    //fill in later
+function addGamePopUp() {
+  //fill in later - ignore for now
 }
 
 const GameLibrary = () => {
-  const navigate = useNavigate();
+  const navigateToHome = () => {
+    window.location.href = "/"; // Navigate to the home page
+  };
+
+  const navigateToCreateRanking = () => {
+    window.location.href = "/create-ranking"; // Navigate to the create ranking page
+  };
 
   return (
     <div>
-      <div className="top-buttons">
-        <button onClick={() => navigate("/")}>Home Page</button>
-        <button onClick={() => navigate("/create-ranking")}>
-          Create Ranking
-        </button>
-      </div>
-
       <div className="game-library-box">Game Library</div>
 
       <div className="middle-buttons">
