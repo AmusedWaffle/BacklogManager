@@ -1,0 +1,42 @@
+.game-library-box {
+  position: fixed;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  padding: 10px;
+  background-color: #6c757d;
+  color: white;
+  font-size: 18px;
+  border-radius: 5px;
+}
+
+.middle-buttons {
+  position: fixed;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  display: flex;
+  gap: 10px;
+}
+
+.middle-buttons button {
+  padding: 10px;
+  border: none;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  background: #6c757d;
+}
+
+.middle-buttons button:hover {
+  background: #5a6268;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  background-color: #f4f4f4;
+}

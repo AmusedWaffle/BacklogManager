@@ -18,13 +18,17 @@ const HomePage = () => {
     localStorage.removeItem("token");
     setIsLoggedIn(false);
   };
+  
+  const navigateToLogin = () => {
+        window.location.href = "/login";
+    }
+
+    const navigateToCreateAccount = () => {
+        window.location.href = "/create-account";
+    }
 
   return (
     <div className="homepage">
-      <div className="top-buttons">
-        <button>Game Library</button>
-        <button>Create Ranking</button>
-      </div>
 
       <div className="login-container">
         <h2>Backlog Manager</h2>
@@ -36,10 +40,8 @@ const HomePage = () => {
           </div>
         ) : (
           <div className="button-container">
-            <Link href="/create-account" passHref>
-              <button className="signup-btn">Create Account</button>
-            </Link>
-            <button className="login-btn">Login</button>
+            <button onClick={navigateToCreateAccount} className="signup-btn">Create Account</button>
+            <button onClick={navigateToLogin} className="login-btn">Login</button>
           </div>
         )}
       </div>
@@ -48,6 +50,7 @@ const HomePage = () => {
         <div className="info-box">About</div>
         <div className="info-box">Ranking</div>
       </div>
+
     </div>
   );
 };
