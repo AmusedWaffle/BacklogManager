@@ -1,14 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
-import "../styles/create_account.css";
+import "../styles/login.css";
 
-const CreateAccount = () => {
+const Login = () => {
   const [formData, setFormData] = useState({
-    name: "",
     email: "",
     password: "",
-    confirmPassword: "",
   });
 
   const [message, setMessage] = useState("");
@@ -19,30 +17,30 @@ const CreateAccount = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
-  
+    console.log("Login form submitted:", formData);
+
     try {
-      const response = await fetch("http://128.113.126.87:5000/register", {
+      const response = await fetch("http://128.113.126.87:5000/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       });
-  
+
       const data = await response.json();
-  
+
       if (response.ok) {
-        setMessage("Account created successfully!");
+        setMessage("Login successful!");
         // Store the token in localStorage
         localStorage.setItem("token", data.token);
         // Redirect to the home page
         window.location.href = "/";
       } else {
-        setMessage(`Error: ${data.message || "Something went wrong"}`);
+        setMessage(`Error: ${data.message || "Invalid email or password"}`);
       }
     } catch (error) {
-      console.error("Error creating account:", error);
+      console.error("Error logging in:", error);
       setMessage("Server error. Please try again.");
     }
   };
@@ -50,29 +48,34 @@ const CreateAccount = () => {
   return (
     <div>
       <div className="main-header">
-        <h1>Create Account</h1>
+        <h1>Login</h1>
       </div>
       <form className="input-grp" onSubmit={handleSubmit}>
-        <label htmlFor="name">Display Name:</label>
-        <input type="text" name="name" value={formData.name} onChange={handleChange} />
-        <br /><br />
-
         <label htmlFor="email">Email:</label>
-        <input type="text" name="email" value={formData.email} onChange={handleChange} />
+        <input
+          type="email"
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
+          required
+        />
         <br /><br />
 
         <label htmlFor="password">Password:</label>
-        <input type="password" name="password" value={formData.password} onChange={handleChange} />
+        <input
+          type="password"
+          name="password"
+          value={formData.password}
+          onChange={handleChange}
+          required
+        />
         <br /><br />
 
-        <label htmlFor="confirmPassword">Confirm Password:</label>
-        <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} />
-        <br /><br />
-
-        <input type="submit" value="Submit" />
+        <input type="submit" value="Login" />
       </form>
+      {message && <p className="message">{message}</p>}
     </div>
   );
 };
 
-export default CreateAccount;
+export default Login;

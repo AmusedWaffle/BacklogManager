@@ -5,18 +5,35 @@
     <title>Game Library</title>
     <link rel="stylesheet" href="game_library.css">
     <link rel="stylesheet" href="top-buttons.css">
+    <script defer src="gamelibrary.js"></script>
 </head>
 <body>
-    <div class="top-buttons">
-        <button onclick="location.href='homepage.html'">Home Page</button>
-        <button onclick="location.href='create-ranking.html'">Create Ranking</button>
+  <div class="top-buttons">
+    <button onclick="location.href='homepage.html'">Game Library</button>
+    <button onclick="location.href='create-ranking.html'">Create Ranking</button>
+  </div>
+
+  <div class="game-library-box">
+    <h2>Game Library</h2>
+  </div>
+
+  <div class="middle-buttons">
+    <button onclick="openGamePopup()">+ Add Game</button>
+    <button onclick="location.href='?'">A-Z</button>
+  </div>
+
+  <div id="addedGamesContainer" class="added-games-container"></div>
+
+  <div id="gamePopup" class="popup">
+    <div class="popup-content">
+      <h2>Add Games:</h2>
+      <div class="search-container">
+        <input type="text" id="searchBar" placeholder="Search for a game...">
+        <button class="search-button">🔍</button>
+      </div>
+      <div id="searchResults"></div> 
+      <button class="add-btn" onclick="addSelectedGame()">+Add</button>
     </div>
-    <div class="game-library-box">
-        Game Library
-    </div>
-    <div class="middle-buttons">
-        <button onclick="location.href='?'">+ Add Game</button>
-        <button onclick="location.href='?'">A-Z</button>
-    </div>
+  </div>
 </body>
 </html>
