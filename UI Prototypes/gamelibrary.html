@@ -1,78 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Library</title>
-    <style>
-        .top-buttons {
-            position: fixed;
-            top: 10px;
-            left: 10px;
-            display: flex;
-            gap: 10px;
-        }
-        .top-buttons button {
-            padding: 10px;
-            border: none;
-            color: white;
-            border-radius: 5px;
-            cursor: pointer;
-            background: #6c757d;
-        }
-        .top-buttons button:hover {
-            background: #5a6268;
-        }
-        .game-library-box {
-            position: fixed;
-            top: 50%;
-            left: 10px;
-            transform: translateY(-50%);
-            padding: 10px;
-            background-color: #6c757d;
-            color: white;
-            font-size: 18px;
-            border-radius: 5px;
-        }
-        .middle-buttons {
-            position: fixed;
-            top: 50%;
-            right: 10px;
-            transform: translateY(-50%);
-            display: flex;
-            gap: 10px;
-        }
-        .middle-buttons button {
-            padding: 10px;
-            border: none;
-            color: white;
-            border-radius: 5px;
-            cursor: pointer;
-            background: #6c757d;
-        }
-        .middle-buttons button:hover {
-            background: #5a6268;
-        }
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f4f4f4;
-        }
-    </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game Library</title>
+  <link rel="stylesheet" href="gamelibrary.css">
+  <script defer src="gamelibrary.js"></script>
 </head>
 <body>
-    <div class="top-buttons">
-        <button onclick="location.href='homepage.html'">Home Page</button>
-        <button onclick="location.href='create-ranking.html'">Create Ranking</button>
+  <div class="top-buttons">
+    <button onclick="location.href='homepage.html'">Game Library</button>
+    <button onclick="location.href='create-ranking.html'">Create Ranking</button>
+  </div>
+
+  <div class="game-library-box">
+    <h2>Game Library</h2>
+  </div>
+
+  <div class="middle-buttons">
+    <button onclick="openGamePopup()">+ Add Game</button>
+    <button onclick="location.href='?'">A-Z</button>
+  </div>
+
+  <div id="addedGamesContainer" class="added-games-container"></div>
+
+  <div id="gamePopup" class="popup">
+    <div class="popup-content">
+      <h2>Add Games:</h2>
+      <div class="search-container">
+        <input type="text" id="searchBar" placeholder="Search for a game...">
+        <button class="search-button">🔍</button>
+      </div>
+      <div id="searchResults"></div> 
+      <button class="add-btn" onclick="addSelectedGame()">+Add</button>
     </div>
-    <div class="game-library-box">
-        Game Library
-    </div>
-    <div class="middle-buttons">
-        <button onclick="location.href='?'">+ Add Game</button>
-        <button onclick="location.href='?'">A-Z</button>
-    </div>
+  </div>
 </body>
 </html>
