@@ -1,41 +1,47 @@
-body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-    background-color: #f4f4f4;
-}
-
-.login-container {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+.main-header {
     text-align: center;
-    width: 300px;  
-}
-
-input {
-    width: 90%;  
-    max-width: 250px;  
-    padding: 10px;
-    margin: 10px 0;
+    margin-bottom: 20px;
+  }
+  
+  .input-grp {
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .input-grp label {
+    font-weight: bold;
+  }
+  
+  .input-grp input {
+    padding: 8px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    box-sizing: border-box;  
-}
-
-button {
-    width: 100%;
-    padding: 10px;
-    border: none;
+    font-size: 16px;
+  }
+  
+  .input-grp input[type="submit"] {
+    background-color: #007bff;
     color: white;
-    border-radius: 5px;
+    border: none;
     cursor: pointer;
-    background: #6c757d;  
-}
-
-button:hover {
-    background: #5a6268;  
-}
+    padding: 10px;
+    font-size: 16px;
+  }
+  
+  .input-grp input[type="submit"]:hover {
+    background-color: #0056b3;
+  }
+  
+  .message {
+    text-align: center;
+    margin-top: 20px;
+    color: #28a745;
+  }
+  
+  .message.error {
+    color: #dc3545;
+  }
