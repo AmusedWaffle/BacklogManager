@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import "../styles/login.css";
 
 const Login = () => {
+
+  ///defines the form we'll send to backend
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -11,10 +13,14 @@ const Login = () => {
 
   const [message, setMessage] = useState("");
 
+  //handles form data
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  //handles submitting the form with a POST request
+  //receives a token from backend
+  //token is stored in local browser storage
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Login form submitted:", formData);
@@ -45,6 +51,8 @@ const Login = () => {
     }
   };
 
+  //returns a main header for the page
+  //and then the form and a submit button
   return (
     <div>
       <div className="main-header">
