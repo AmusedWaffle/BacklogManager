@@ -5,7 +5,7 @@ import "../styles/create_account.css";
 
 const CreateAccount = () => {
 
-  //declares the form to be submitted to backend
+  // Declares the form to be submitted to backend
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -15,15 +15,15 @@ const CreateAccount = () => {
 
   const [message, setMessage] = useState("");
 
-
+  // Handles form data
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  //handles submitting form data
-  //sends a POST request to backend
-  //receives back login token
-  //saves it to local browser storage
+  // Handles submitting form data
+  // Sends a POST request to backend
+  // Receives back login token
+  // Saves it to local browser storage
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Form submitted:", formData);
@@ -54,8 +54,8 @@ const CreateAccount = () => {
     }
   };
 
-  //returns just a simple form asking for all required fields when
-  //creating an account
+  // Returns just a simple form asking for all required fields when
+  // Creating an account
   return (
     <div>
       <div className="main-header">

@@ -13,7 +13,11 @@ const GameLibrary = () => {
   const [error, setError] = useState(null);
   const [searchLoading, setSearchLoading] = useState(false);
 
+  // NOTE TO CODE REVIEWERS: This code has not been fully tested yet
+    // I simply wanted to get everything committed and pushed before the code review
+
   // Check if user is logged in and fetch games on component mount
+  // redirects to homepage if user is not logged in
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -24,6 +28,9 @@ const GameLibrary = () => {
     fetchUserGames(token);
   }, []);
 
+  // Function to load in the games a user has when page is loaded
+  // sends token as authentication for backend to check
+  // Receives a JSON with the user's games from backend
   const fetchUserGames = async (token) => {
     try {
       setLoading(true);
@@ -48,6 +55,10 @@ const GameLibrary = () => {
     }
   };
 
+  // Search games request to be used when searching for a game to add
+  // Gets run when the user hits enter on the Add Game pop-up
+  // Sends the token as authentication
+  // Receives JSON of unowned games that match the search query
   const searchGames = async (query) => {
     const token = localStorage.getItem("token");
     if (!token || !query.trim()) return;
@@ -78,6 +89,7 @@ const GameLibrary = () => {
     }
   };
 
+  // Opens add game pop-up
   const openGamePopup = () => {
     setShowPopup(true);
     setSearchQuery("");
@@ -85,15 +97,20 @@ const GameLibrary = () => {
     setSearchResults([]);
   };
 
+  // Closes add game pop-up
   const closeGamePopup = () => {
     setShowPopup(false);
   };
 
+  // Sends search query to backend
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     searchGames(searchQuery);
   };
 
+  // Tells backend to add the selected game to the user's library
+  // Sends token for authentication
+  // Receives a JSON with the selected game
   const addSelectedGame = async () => {
     if (!selectedGame) {
       alert("Please select a game before adding.");
@@ -128,6 +145,7 @@ const GameLibrary = () => {
     }
   };
 
+  // Loading page for the game library
   if (loading) {
     return <div className="loading">Loading your game library...</div>;
   }
@@ -136,6 +154,11 @@ const GameLibrary = () => {
     return <div className="error">{error}</div>;
   }
 
+  // Returns a row of button in the middle of the screen
+    // One displays the add game pop-up
+    // The other changes the ordering of the displayed game <-- not functional yet
+  // Also displays added games in the user's library below the button
+  // Also returns the pop-up
   return (
     <div>
       <div className="game-library-box">Game Library</div>

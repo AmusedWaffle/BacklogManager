@@ -5,22 +5,20 @@ import "../styles/login.css";
 
 const Login = () => {
 
-  ///defines the form we'll send to backend
+  // Defines the form we'll send to backend
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
 
-
-
-  //handles form data
+  // Handles form data
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  //handles submitting the form with a POST request
-  //receives a token from backend
-  //token is stored in local browser storage
+  // Handles submitting the form with a POST request
+  // Receives a token from backend
+  // Token is stored in local browser storage
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -44,8 +42,8 @@ const Login = () => {
     }
   };
 
-  //returns a main header for the page
-  //and then the form and a submit button
+  // Returns a main header for the page
+  // And then the form and a submit button
   return (
     <div>
       <div className="main-header">
