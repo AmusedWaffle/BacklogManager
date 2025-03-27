@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import "../styles/create_account.css";
 
 const CreateAccount = () => {
-
   // Declares the form to be submitted to backend
   const [formData, setFormData] = useState({
     name: "",
@@ -27,7 +26,7 @@ const CreateAccount = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Form submitted:", formData);
-  
+
     try {
       const response = await fetch("http://128.113.126.87:5000/register", {
         method: "POST",
@@ -36,9 +35,9 @@ const CreateAccount = () => {
         },
         body: JSON.stringify(formData),
       });
-  
+
       const data = await response.json();
-  
+
       if (response.ok) {
         setMessage("Account created successfully!");
         // Store the token in localStorage
@@ -63,20 +62,44 @@ const CreateAccount = () => {
       </div>
       <form className="input-grp" onSubmit={handleSubmit}>
         <label htmlFor="name">Display Name:</label>
-        <input type="text" name="name" value={formData.name} onChange={handleChange} />
-        <br /><br />
+        <input
+          type="text"
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
+        />
+        <br />
+        <br />
 
         <label htmlFor="email">Email:</label>
-        <input type="text" name="email" value={formData.email} onChange={handleChange} />
-        <br /><br />
+        <input
+          type="text"
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
+        />
+        <br />
+        <br />
 
         <label htmlFor="password">Password:</label>
-        <input type="password" name="password" value={formData.password} onChange={handleChange} />
-        <br /><br />
+        <input
+          type="password"
+          name="password"
+          value={formData.password}
+          onChange={handleChange}
+        />
+        <br />
+        <br />
 
         <label htmlFor="confirmPassword">Confirm Password:</label>
-        <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} />
-        <br /><br />
+        <input
+          type="password"
+          name="confirmPassword"
+          value={formData.confirmPassword}
+          onChange={handleChange}
+        />
+        <br />
+        <br />
 
         <input type="submit" value="Submit" />
       </form>

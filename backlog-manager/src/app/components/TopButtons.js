@@ -2,9 +2,8 @@
 import React from "react";
 import "../styles/top-buttons.css";
 
-
-// This component will be imported in every page 
-  // Instead of copying code over and over
+// This component will be imported in every page
+// Instead of copying code over and over
 // Serves as navigation
 const TopButtons = ({ fixed = false }) => {
   const navigateToHome = () => {
@@ -17,7 +16,7 @@ const TopButtons = ({ fixed = false }) => {
 
   const navigateToGameLibrary = () => {
     window.location.href = "/game-library";
-  }
+  };
 
   // Returns the buttons to be display
   // Position is set to fixed on the Game Library page only

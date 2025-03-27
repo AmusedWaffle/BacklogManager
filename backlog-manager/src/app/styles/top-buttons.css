@@ -1,28 +1,27 @@
 .top-buttons {
-
-    top: 10px;
-    left: 10px;
-    display: flex;
-    gap: 10px;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  gap: 10px;
 }
 .top-buttons button {
-    padding: 10px;
-    border: none;
-    color: white;
-    border-radius: 5px;
-    cursor: pointer;
-    background: #6c757d;
-    height: 55px;
+  padding: 10px;
+  border: none;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  background: #6c757d;
+  height: 55px;
 }
 .top-buttons button:hover {
-    background: #5a6268;
+  background: #5a6268;
 }
 
-.drop-btn{
-    top: 10px;
-    right: 10px;
-    display: flex;
-    position: fixed;
-    gap: 10px;
-    height: 55px;
+.drop-btn {
+  top: 10px;
+  right: 10px;
+  display: flex;
+  position: fixed;
+  gap: 10px;
+  height: 55px;
 }
