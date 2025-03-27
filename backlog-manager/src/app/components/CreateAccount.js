@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import "../styles/create_account.css";
 
 const CreateAccount = () => {
+
+  //declares the form to be submitted to backend
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -13,10 +15,15 @@ const CreateAccount = () => {
 
   const [message, setMessage] = useState("");
 
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  //handles submitting form data
+  //sends a POST request to backend
+  //receives back login token
+  //saves it to local browser storage
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Form submitted:", formData);
@@ -47,6 +54,8 @@ const CreateAccount = () => {
     }
   };
 
+  //returns just a simple form asking for all required fields when
+  //creating an account
   return (
     <div>
       <div className="main-header">
