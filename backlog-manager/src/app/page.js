@@ -1,5 +1,11 @@
 import HomePage from "./components/HomePage";
+import TopButtons from "./components/TopButtons";
 
-export default function Page() {
-  return <HomePage />;
+export default function Home() {
+  return (
+    <div>
+      <TopButtons />
+      <HomePage />
+    </div>
+    );
 }
