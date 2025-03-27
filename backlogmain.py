@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+from sqlalchemy.sql.expression import func
 import hashlib, requests, uuid
 #pip install flask flask_sqlalchemy psycopg2 flask_cors
 
@@ -49,13 +50,26 @@ class Preferences(db.Model):
     def __repr__(self):
         return f'<User {self.email}>'
     
-#Temporary table
+#Library table
 class Library(db.Model):
     email = db.Column(db.String(100), nullable=False, primary_key=True)
     gameid = db.Column(db.String(100), nullable=False, primary_key=True)
 
     def __repr__(self):
-        return f'<User {self.email}>'
+        return f'<Library {self.email}>'
+
+#Game table
+class Game(db.Model):
+    id = db.Column(db.String(100), unique=True, nullable=False, primary_key=True)
+    name = db.Column(db.String(200), nullable=False)
+    platform = db.Column(db.String(200), nullable=False)
+    genre = db.Column(db.String(200), nullable=False)
+    release_date = db.Column(db.String(200), nullable=False)
+    description = db.Column(db.String(200), nullable=False)
+    image = db.Column(db.String(200), nullable=False)
+
+    def __repr__(self):
+        return f'<Game {self.name}>'
 
 #Create tables in the database (one-time setup for now)
 with app.app_context():
@@ -100,6 +114,10 @@ def add_game():
     data = request.json
     user_id = data['email']
     rawg_id = data['game']
+
+def create_ranking():
+    random_ranking = Game.query.order_by(func.random()).limit(10).all()
+    return random_ranking
 
 #Generate a new session token
 def generate_token():
