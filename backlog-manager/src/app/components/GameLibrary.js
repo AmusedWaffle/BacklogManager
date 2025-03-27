@@ -14,7 +14,7 @@ const GameLibrary = () => {
   const [searchLoading, setSearchLoading] = useState(false);
 
   // NOTE TO CODE REVIEWERS: This code has not been fully tested yet
-    // I simply wanted to get everything committed and pushed before the code review
+  // I simply wanted to get everything committed and pushed before the code review
 
   // Check if user is logged in and fetch games on component mount
   // redirects to homepage if user is not logged in
@@ -34,13 +34,16 @@ const GameLibrary = () => {
   const fetchUserGames = async (token) => {
     try {
       setLoading(true);
-      const response = await fetch("http://128.113.126.87:5000/get-games-library", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        }
-      });
+      const response = await fetch(
+        "http://128.113.126.87:5000/get-games-library",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
 
       const data = await response.json();
       if (response.ok) {
@@ -69,9 +72,9 @@ const GameLibrary = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ query })
+        body: JSON.stringify({ query }),
       });
 
       const data = await response.json();
@@ -128,9 +131,9 @@ const GameLibrary = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ game: selectedGame })
+        body: JSON.stringify({ game: selectedGame }),
       });
 
       const data = await response.json();
@@ -155,8 +158,8 @@ const GameLibrary = () => {
   }
 
   // Returns a row of button in the middle of the screen
-    // One displays the add game pop-up
-    // The other changes the ordering of the displayed game <-- not functional yet
+  // One displays the add game pop-up
+  // The other changes the ordering of the displayed game <-- not functional yet
   // Also displays added games in the user's library below the button
   // Also returns the pop-up
   return (
@@ -176,7 +179,9 @@ const GameLibrary = () => {
             </div>
           ))
         ) : (
-          <p>No games in your library yet. Click '+ Add Game' to get started!</p>
+          <p>
+            No games in your library yet. Click '+ Add Game' to get started!
+          </p>
         )}
       </div>
 

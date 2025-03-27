@@ -1,47 +1,47 @@
 .main-header {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  .input-grp {
-    width: 100%;
-    max-width: 300px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  
-  .input-grp label {
-    font-weight: bold;
-  }
-  
-  .input-grp input {
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
-  }
-  
-  .input-grp input[type="submit"] {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    cursor: pointer;
-    padding: 10px;
-    font-size: 16px;
-  }
-  
-  .input-grp input[type="submit"]:hover {
-    background-color: #0056b3;
-  }
-  
-  .message {
-    text-align: center;
-    margin-top: 20px;
-    color: #28a745;
-  }
-  
-  .message.error {
-    color: #dc3545;
-  }
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.input-grp {
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.input-grp label {
+  font-weight: bold;
+}
+
+.input-grp input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.input-grp input[type="submit"] {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  font-size: 16px;
+}
+
+.input-grp input[type="submit"]:hover {
+  background-color: #0056b3;
+}
+
+.message {
+  text-align: center;
+  margin-top: 20px;
+  color: #28a745;
+}
+
+.message.error {
+  color: #dc3545;
+}

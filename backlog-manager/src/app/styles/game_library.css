@@ -145,7 +145,8 @@ body {
   background: #333;
 }
 
-.loading, .error {
+.loading,
+.error {
   position: fixed;
   top: 50%;
   left: 50%;

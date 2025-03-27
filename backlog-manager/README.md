@@ -17,6 +17,9 @@
 5. Note: src/app/page.js is the going page, and src/app/layout.js 
     is the global layout applied to all pages
 
+## Coding Standards:
+1. All of our React JS and CSS source code files have been linted with Prettier's default options
+2. 
 
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
