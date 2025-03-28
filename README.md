@@ -3,13 +3,13 @@ A web app to help users track their game libraries and backlog.
 
 ## Notes:
 1. Backend:
-   Flask (Python)
-   PostgreSQL (Database)
+   Flask (Python),
+   PostgreSQL (Database),
    SQLAlchemy (ORM)
 2. Dependencies:
-   flask
-   flask_sqlalchemy
-   flask_cors
+   flask,
+   flask_sqlalchemy,
+   flask_cors,
    psycopg2
 
 ## Coding Standards:
