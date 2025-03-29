@@ -1,6 +1,7 @@
 """This module implements many different secure hash and message digest algorithms."""
 import hashlib
 import uuid
+import requests
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
@@ -16,6 +17,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://knighk4:1234@localhost/bac
 
 db = SQLAlchemy(app)
 
+RAWG_QUERY_URL = "https://api.rawg.io/api/games"
+RAWG_GAME_DETAILS_URL = "https://api.rawg.io/api/games/{}"
 API_KEY = "1af69e1cf8664df59d23e49cd5aca2ea"
 
 '''
@@ -112,11 +115,63 @@ def login():
         return jsonify({'token': token}), 200
     return jsonify({'error': 'Invalid email or password'}), 401
 
-@app.route('/add_game', methods=['POST'])
+@app.route('/add-game', methods=['POST'])
 def add_game():
-    """WPI API route to add game for a user: http://127.0.0.1:5000/add_game."""
+    """WPI API route to add game for a user: http://127.0.0.1:5000/add-game."""
     data = request.json
-    return data
+    token = data['token']
+    rawg_id = data['id']
+
+    user = Users.query.filter_by(session_token=token).first()
+    if not user:
+        return jsonify({'error': 'Invalid token'}), 401
+
+    # Check if the user already owns the game
+    existing = Library.query.filter_by(email=user.email, gameid=rawg_id).first()
+    if existing:
+        return jsonify({'message': 'Game already added'})
+
+    new_entry = Library(email=user.email, gameid=rawg_id)
+    db.session.add(new_entry)
+    db.session.commit()
+
+    return jsonify({'message': 'Game added successfully'})
+
+@app.route('/get-games-library', methods=['POST'])
+def get_game_library():
+    """WPI API route to add game for a user: http://127.0.0.1:5000//get-games-library."""
+    data = request.json
+    token = data['token']
+
+    # Verify the token
+    user = Users.query.filter_by(session_token=token).first()
+    if not user:
+        return jsonify({'error': 'Invalid token'}), 401
+
+    user_games = Library.query.filter_by(email=user.email).all()
+    game_ids = [game.gameid for game in user_games]
+    results = []
+    for game_id in game_ids:
+        response = requests.get(RAWG_GAME_DETAILS_URL.format(game_id), params={'key': API_KEY})
+        if response.status_code == 200:
+            game_data = response.json()
+            results.append({'id': game_data['id'], 'name': game_data['name']})
+
+    return jsonify({'results': results})
+
+@app.route('/search-games', methods=['POST'])
+def search_games():
+    """WPI API route to add game for a user: http://127.0.0.1:5000//search-games."""
+    data = request.json
+    search_query = data['query']
+    params = {
+        'key': API_KEY,  
+        'search': search_query
+    }
+    response = requests.get(RAWG_QUERY_URL, params=params)
+    results = response.json().get('results', [])
+    games = [{'id': game['id'], 'name': game['name']} for game in results]
+    return jsonify({'results': games})
 
 def create_ranking():
     """Creates a game ranking."""
