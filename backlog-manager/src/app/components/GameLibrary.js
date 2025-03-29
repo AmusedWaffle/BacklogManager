@@ -1,20 +1,24 @@
 // components/GameLibrary.js
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "../styles/game_library.css";
 
 const GameLibrary = () => {
   const [userGames, setUserGames] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
-  const [selectedGame, setSelectedGame] = useState("");
+  const [selectedGame, setSelectedGame] = useState({ id: "", name: "" });
   const [searchQuery, setSearchQuery] = useState("");
   const [showPopup, setShowPopup] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchLoading, setSearchLoading] = useState(false);
-
-  // NOTE TO CODE REVIEWERS: This code has not been fully tested yet
-  // I simply wanted to get everything committed and pushed before the code review
+  const [contextMenu, setContextMenu] = useState({
+    visible: false,
+    x: 0,
+    y: 0,
+    game: null
+  });
+  const contextMenuRef = useRef(null);
 
   // Check if user is logged in and fetch games on component mount
   // redirects to homepage if user is not logged in
@@ -28,6 +32,19 @@ const GameLibrary = () => {
     fetchUserGames(token);
   }, []);
 
+  // Close context menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (contextMenuRef.current && !contextMenuRef.current.contains(event.target)) {
+        setContextMenu({ ...contextMenu, visible: false });
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [contextMenu]);
+
   // Function to load in the games a user has when page is loaded
   // sends token as authentication for backend to check
   // Receives a JSON with the user's games from backend
@@ -39,15 +56,17 @@ const GameLibrary = () => {
         {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json"
           },
-        },
+          body: JSON.stringify({ token }),
+        }
       );
-
+  
       const data = await response.json();
       if (response.ok) {
-        setUserGames(data.games || []);
+        // Handle both response formats:
+        const gamesArray = Array.isArray(data) ? data : data.games || [];
+        setUserGames(gamesArray);
       } else {
         setError(data.message || "Failed to fetch games");
       }
@@ -62,6 +81,7 @@ const GameLibrary = () => {
   // Gets run when the user hits enter on the Add Game pop-up
   // Sends the token as authentication
   // Receives JSON of unowned games that match the search query
+  // Response format: [{'id': game_id, 'name': game_name}, ...]
   const searchGames = async (query) => {
     const token = localStorage.getItem("token");
     if (!token || !query.trim()) return;
@@ -72,9 +92,8 @@ const GameLibrary = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ query }),
+        body: JSON.stringify({ token, query }),
       });
 
       const data = await response.json();
@@ -96,7 +115,7 @@ const GameLibrary = () => {
   const openGamePopup = () => {
     setShowPopup(true);
     setSearchQuery("");
-    setSelectedGame("");
+    setSelectedGame({ id: "", name: "" });
     setSearchResults([]);
   };
 
@@ -112,10 +131,10 @@ const GameLibrary = () => {
   };
 
   // Tells backend to add the selected game to the user's library
-  // Sends token for authentication
+  // Sends token for authentication along with game ID and name
   // Receives a JSON with the selected game
   const addSelectedGame = async () => {
-    if (!selectedGame) {
+    if (!selectedGame.id || !selectedGame.name) {
       alert("Please select a game before adding.");
       return;
     }
@@ -131,14 +150,20 @@ const GameLibrary = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ game: selectedGame }),
+        body: JSON.stringify({ 
+          token,
+          game_id: selectedGame.id,
+          game_name: selectedGame.name 
+        }),
       });
 
       const data = await response.json();
       if (response.ok) {
-        setUserGames([...userGames, selectedGame]);
+        setUserGames([...userGames, { 
+          id: selectedGame.id, 
+          name: selectedGame.name 
+        }]);
         closeGamePopup();
       } else {
         alert(data.message || "Failed to add game");
@@ -157,6 +182,65 @@ const GameLibrary = () => {
     return <div className="error">{error}</div>;
   }
 
+  // Handle right-click on game
+  const handleGameRightClick = (e, game) => {
+    e.preventDefault();
+    console.log("Right-clicked game:", game); // Debug log
+    setContextMenu({
+      visible: true,
+      x: e.clientX,
+      y: e.clientY,
+      game: {
+        id: game.id, 
+        name: game.name
+      }
+    });
+  };
+
+  // Delete game from library
+  const deleteGame = async () => {
+    if (!contextMenu.game || !contextMenu.game.id) {
+      console.error("No game ID available for deletion");
+      alert("Unable to delete - missing game ID");
+      return;
+    }
+    
+    console.log("Deleting game:", contextMenu.game); // Debug log
+    
+    const token = localStorage.getItem("token");
+    if (!token) {
+      window.location.href = "/";
+      return;
+    }
+  
+    try {
+      const response = await fetch("http://128.113.126.87:5000/delete-game", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          token,
+          game_id: contextMenu.game.id,
+          game_name: contextMenu.game.name
+        }),
+      });
+  
+      const data = await response.json();
+      if (response.ok) {
+        setUserGames(userGames.filter(g => g.id !== contextMenu.game.id));
+      } else {
+        console.error("Delete failed:", data.message);
+        alert(data.message || "Failed to delete game");
+      }
+    } catch (err) {
+      console.error("Delete error:", err);
+      alert("Network error. Please try again.");
+    } finally {
+      setContextMenu({ ...contextMenu, visible: false });
+    }
+  };
+
   // Returns a row of button in the middle of the screen
   // One displays the add game pop-up
   // The other changes the ordering of the displayed game <-- not functional yet
@@ -174,14 +258,16 @@ const GameLibrary = () => {
       <div className="added-games-container">
         {userGames.length > 0 ? (
           userGames.map((game, index) => (
-            <div key={index} className="added-game">
-              {game}
+            <div 
+              key={index} 
+              className="added-game"
+              onContextMenu={(e) => handleGameRightClick(e, game)}
+            >
+              {game.name}
             </div>
           ))
         ) : (
-          <p>
-            No games in your library yet. Click '+ Add Game' to get started!
-          </p>
+          <p>No games in your library yet. Click '+ Add Game' to get started!</p>
         )}
       </div>
 
@@ -209,11 +295,11 @@ const GameLibrary = () => {
                   <div
                     key={index}
                     className={`search-result ${
-                      selectedGame === game ? "selected" : ""
+                      selectedGame.id === game.id ? "selected" : ""
                     }`}
                     onClick={() => setSelectedGame(game)}
                   >
-                    {game}
+                    {game.name}
                   </div>
                 ))
               ) : (
@@ -227,13 +313,29 @@ const GameLibrary = () => {
             <button
               className="add-btn"
               onClick={addSelectedGame}
-              disabled={!selectedGame}
+              disabled={!selectedGame.id}
             >
               + Add Selected Game
             </button>
           </div>
         </div>
       )}
+
+    {contextMenu.visible && (
+      <div
+        ref={contextMenuRef}
+        className="context-menu"
+        style={{
+          position: 'fixed',
+          top: `${contextMenu.y}px`,
+          left: `${contextMenu.x}px`,
+        }}
+      >
+        <div className="context-menu-item" onClick={deleteGame}>
+          Delete Game
+        </div>
+      </div>
+    )}
     </div>
   );
 };
