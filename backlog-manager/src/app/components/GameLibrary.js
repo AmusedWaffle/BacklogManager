@@ -19,6 +19,7 @@ const GameLibrary = () => {
     game: null
   });
   const contextMenuRef = useRef(null);
+  const popupRef = useRef(null);
 
   // Check if user is logged in and fetch games on component mount
   // redirects to homepage if user is not logged in
@@ -35,15 +36,21 @@ const GameLibrary = () => {
   // Close context menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (contextMenuRef.current && !contextMenuRef.current.contains(event.target)) {
+      // Close popup if clicking outside of it
+      if (showPopup && popupRef.current && !popupRef.current.contains(event.target)) {
+        closeGamePopup();
+      }
+      // Close context menu if clicking outside of it
+      if (contextMenu.visible && contextMenuRef.current && !contextMenuRef.current.contains(event.target)) {
         setContextMenu({ ...contextMenu, visible: false });
       }
     };
+  
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [contextMenu]);
+  }, [showPopup, contextMenu]); // Dependencies ensure proper cleanup
 
   // Function to load in the games a user has when page is loaded
   // sends token as authentication for backend to check
@@ -273,7 +280,7 @@ const GameLibrary = () => {
 
       {showPopup && (
         <div className="popup">
-          <div className="popup-content">
+          <div className="popup-content" ref={popupRef}>
             <h2>Add Games</h2>
             <form className="search-container" onSubmit={handleSearchSubmit}>
               <input
