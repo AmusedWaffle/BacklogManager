@@ -2,7 +2,8 @@
 import hashlib
 import uuid
 import requests
-from flask import Flask, request, jsonify
+import json
+from flask import Flask, request, jsonify, Response
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from sqlalchemy.sql.expression import func
@@ -58,7 +59,7 @@ class Preferences(db.Model):
 class Library(db.Model):
     """Game Library table with columns: email and gameid."""
     email = db.Column(db.String(100), nullable=False, primary_key=True)
-    gameid = db.Column(db.String(100), nullable=False, primary_key=True)
+    gameid = db.Column(db.Integer(), nullable=False, primary_key=True)
 
     def __repr__(self):
         return f'<Library {self.email}>'
@@ -67,7 +68,7 @@ class Game(db.Model):
     """Game table with columns:
     id, name, platform, genre, release date, description, and a image.
     """
-    id = db.Column(db.String(100), unique=True, nullable=False, primary_key=True)
+    id = db.Column(db.Integer(), unique=True, nullable=False, primary_key=True)
     name = db.Column(db.String(200), nullable=False)
     platform = db.Column(db.String(200), nullable=False)
     genre = db.Column(db.String(200), nullable=False)
@@ -120,7 +121,7 @@ def add_game():
     """WPI API route to add game for a user: http://127.0.0.1:5000/add-game."""
     data = request.json
     token = data['token']
-    rawg_id = data['id']
+    rawg_id = data['game_id']
 
     user = Users.query.filter_by(session_token=token).first()
     if not user:
@@ -137,9 +138,33 @@ def add_game():
 
     return jsonify({'message': 'Game added successfully'})
 
-@app.route('/get-games-library', methods=['POST'])
+@app.route('/delete-game', methods=['POST'])
+def delete_game():
+    """WPI API route to delete game for a user: http://127.0.0.1:5000/delete-game."""
+    data = request.json
+    print(data)
+    token = data['token']
+    rawg_id = data['game_id']
+
+    user = Users.query.filter_by(session_token=token).first()
+    if not user:
+        return jsonify({'error': 'Invalid token'}), 401
+
+    # Check if the user already owns the game
+    game = Library.query.filter_by(email=user.email, gameid=rawg_id).first()
+    if not game:
+        return jsonify({'message': 'Game not found in library'})
+
+    db.session.delete(game)
+    db.session.commit()
+
+    return jsonify({'message': 'Game deleted successfully'})
+
+@app.route('/get-games-library', methods=['POST', 'OPTIONS'])
 def get_game_library():
     """WPI API route to add game for a user: http://127.0.0.1:5000//get-games-library."""
+    if request.method == 'OPTIONS':
+        return '', 200
     data = request.json
     token = data['token']
 
@@ -149,15 +174,15 @@ def get_game_library():
         return jsonify({'error': 'Invalid token'}), 401
 
     user_games = Library.query.filter_by(email=user.email).all()
-    game_ids = [game.gameid for game in user_games]
+    game_ids = [entry.gameid for entry in user_games]
     results = []
     for game_id in game_ids:
         response = requests.get(RAWG_GAME_DETAILS_URL.format(game_id), params={'key': API_KEY})
         if response.status_code == 200:
             game_data = response.json()
             results.append({'id': game_data['id'], 'name': game_data['name']})
-
-    return jsonify({'results': results})
+    json_data = json.dumps(results)
+    return Response(json_data, content_type='application/json')
 
 @app.route('/search-games', methods=['POST'])
 def search_games():
