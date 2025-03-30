@@ -1,67 +1,55 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>Backlog Manager | Display Ranking</title>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-        <link rel="stylesheet" href="display_ranking.css">
-        <link rel="stylesheet" href="top-buttons.css">
-    </head>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Ranking</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="top-buttons.css">
+    <link rel="stylesheet" href="display_ranking.css">
+</head>
+<body>
+    <div class="top-buttons">
+        <button onclick="location.href='gamelibrary.html'">Game Library</button>
+        <button onclick="location.href='rankings_creation_prototype.html'">Create Ranking</button>
+        <button class="drop-btn"> <img src="Default_pfp.png" width="35" height="35"/> </button>
+    </div>
 
-    <body>
-        <div class="top-buttons" >
-            <button class="top-bar">Home Page</button>
-            <button class="top-bar">Game Library</button>
-            <button class="top-bar">Create Ranking</button>
-            <button class="drop-btn"> <img src="Default_pfp.png" width="35" height="35"/> </button>
-        </div>
+    <div class="main-header">
+        <h1>My Ranking</h1>
+    </div>
 
-        <div class="main-header">
-            <h1>My Ranking</h1>
-        </div>
-
-        <div class="ranking-order">
-            <div class="top-5">
-                <div class="top-3">
-                    <div class="frst-plce">
-                        <h1>#1:</h1>
-                        <button>placeholder</button>
-                    </div>
-                    
-                    <div class="scnd-plce">
-                        <h2>#2:</h2>
-                        <button>placeholder</button>
-                    </div>
-                    
-                    <div class="thrd-plce">
-                        <h3>#3:</h3>
-                        <button>placeholder</button>
-                    </div>
+    <div class="ranking-order">
+        <div class="top-5">
+            <div class="top-3">
+                <div class="frst-plce">
+                    <h2>#1: <span id="rank-1"></span></h2>
                 </div>
-                <div class="bottom-4-5">
-                    <div class="frth-plce">
-                        <h4>#4:</h4>
-                        <button>placeholder</button>
-                    </div>
-                    
-                    <div class="ffth-plce">
-                        <h5>#5:</h5>
-                        <button>placeholder</button>
-                    </div>
+                <div class="scnd-plce">
+                    <h2>#2: <span id="rank-2"></span></h2>
+                </div>
+                <div class="thrd-plce">
+                    <h2>#3: <span id="rank-3"></span></h2>
                 </div>
             </div>
-            
-            <div class="remaining-games">
-                <div class="sxth-plce">
-                    <h6>#6:</h6>
-                    <button>placeholder</button>
+            <div class="bottom-4-5">
+                <div class="frth-plce">
+                    <h2>#4: <span id="rank-4"></span></h2>
                 </div>
-                
-                <div class="svnth-plce">
-                    <h6>#7:</h6>
-                    <button>placeholder</button>
+                <div class="ffth-plce">
+                    <h2>#5: <span id="rank-5"></span></h2>
                 </div>
             </div>
         </div>
-        
-    </body>
+    </div>
+
+    <script>
+        const titles = JSON.parse(localStorage.getItem("rankedGames")) || [];
+        for (let i = 0; i < 5; i++) {
+            const x = document.getElementById(`rank-${i + 1}`);
+            if (x && titles[i]) {
+                x.textContent = titles[i];
+            }
+        }
+    </script>
+</body>
 </html>
