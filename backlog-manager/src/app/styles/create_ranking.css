@@ -1,0 +1,155 @@
+.create-ranking-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.main-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.pref-drop-div {
+    overflow: hidden;
+    background-color: #6c757d;
+    font-family: Arial;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.pref-dropdwn {
+    float: left;
+    overflow: hidden;
+    width: 100%;
+}
+
+.pref-drop-btn {
+    font-size: 16px;
+    border: none;
+    outline: none;
+    color: white;
+    padding: 14px 16px;
+    background-color: inherit;
+    font-family: inherit;
+    margin: 0;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+}
+
+.dropdown-content {
+    display: block;
+    position: relative;
+    background-color: #f9f9f9;
+    width: 100%;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    max-height: 400px;
+    overflow-y: auto;
+    max-height: 500px;
+    overflow-y: auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    padding: 15px;
+}
+
+.dropdown-content div {
+    padding: 12px 16px;
+}
+
+.dropdown-content p {
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #333;
+    font-weight: bold;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+}
+
+.dropdown-content a {
+    float: none;
+    color: black;
+    padding: 8px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+    cursor: pointer;
+    margin: 0;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: #ddd;
+}
+
+.save-default {
+    padding: 12px 16px;
+    color: #007bff;
+    cursor: pointer;
+    text-align: center;
+    grid-column: 1 / -1;
+    margin-top: 10px;
+    border-top: 1px solid #ddd;
+    transition: background-color 0.2s;
+}
+  
+.save-default:hover {
+    background-color: #f0f0f0;
+}
+
+.create-ranking-btn {
+    padding: 12px 24px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    display: block;
+    margin: 0 auto;
+    width: 200px;
+}
+
+.create-ranking-btn:hover {
+    background-color: #218838;
+}
+
+.loading {
+    text-align: center;
+    padding: 40px;
+    font-size: 18px;
+}
+#genre {
+    column-count: 2; 
+    column-gap: 20px;
+}
+
+#genre a {
+    break-inside: avoid;
+    margin-bottom: 5px;
+}
+
+.error-message {
+    color: #dc3545;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    padding: 10px 15px;
+    border-radius: 4px;
+    margin: 15px auto;
+    max-width: 500px;
+    text-align: center;
+}
+  
+.create-ranking-btn:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+}
+
+#completion-time input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
