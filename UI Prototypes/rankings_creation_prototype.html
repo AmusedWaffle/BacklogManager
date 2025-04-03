@@ -1,49 +1,85 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>Backlog Manager | Create Ranking</title>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-        <link rel="stylesheet" href="rankings_creation.css">
-        <link rel="stylesheet" href="top-buttons.css">
-    </head>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Backlog Manager | Create Ranking</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="top-buttons.css">
+    <link rel="stylesheet" href="rankings_creation.css">
+</head>
+<body>
+    <div class="top-buttons">
+        <button>Home Page</button>
+        <button>Create Ranking</button>
+    </div>
 
-    <body>
-        <div class="top-buttons" >
-            <button class="top-bar">Home Page</button>
-            <button class="top-bar">Game Library</button>
-            <button class="drop-btn"> <img src="Default_pfp.png" width="35" height="35"/> </button>
-        </div>
-        
-        <div class="main-header">
-            <h1>Create Ranking</h1>
-        </div>
+    <div class="main-header">
+        <h1>Create Ranking</h1>
+    </div>
 
-        <div class="pref-drop-div">
-        
-            <div class="pref-dropdwn">
-                <button class="pref-drop-btn">
-                    Preferences
-                    <i class="fa fa-caret-down"></i>
-                </button>
-                <div class="dropdown-content">
-                    <div id="genre">
-                        <p>Genre</p>
-                        <a>Horror</a>
-                        <a>FPS</a>
-                        <a>placeholder</a>
+    <div class="popup" id="rankingPopup">
+        <div class="popup-content">
+            <h2>Create Ranking</h2>
+            <div class="form-container">
+                <div class="left-section">
+                    <h3>Genre</h3>
+                    <label><input type="checkbox" name="genre" value="Action"> Action</label><br>
+                    <label><input type="checkbox" name="genre" value="Adventure"> Adventure</label><br>
+                    <label><input type="checkbox" name="genre" value="FPS"> FPS</label><br>
+                </div>
+
+                <div class="middle-section">
+                    <label>Playtime Range (hrs):</label>
+                    <div class="range-group">
+                        <input type="number" name="playtime-min" placeholder="Min hrs">
+                        <span>to</span>
+                        <input type="number" name="playtime-max" placeholder="Max hrs">
                     </div>
-                    <div id="playtime">
-                        <p>Playtime</p>
-                        <a>placeholder</a>
+                </div>
+
+                <div class="right-section">
+                    <label>Completion % Range:</label>
+                    <div class="range-group">
+                        <input type="number" name="completion-min" placeholder="Min %" min="0" max="100">
+                        <span>to</span>
+                        <input type="number" name="completion-max" placeholder="Max %" min="0" max="100">
                     </div>
-                    <div id="completion">
-                        <p>Completion Status</p>
-                        <a>placeholder</a>
-                    </div>
-                    <p>Save Default</p>
                 </div>
             </div>
+
+            <button class="save-btn">Create Ranking</button>
         </div>
-        <button>Create Ranking</button>
-    </body>
+    </div>
+
+    <script>
+        const exampleGames = [
+            { title: "Elden Ring", genre: ["RPG", "Action"], playtime: 100, completion: 90 },
+            { title: "Hollow Knight", genre: ["Action", "Adventure"], playtime: 40, completion: 80 },
+            { title: "DOOM Eternal", genre: ["FPS", "Action"], playtime: 20, completion: 95 }
+        ];
+
+        function filterAndRankGames(selectedGenres, minPlaytime, maxPlaytime, minCompletion, maxCompletion) {
+            return exampleGames.filter(game => {
+                const matchesGenre = selectedGenres.some(g => game.genre.includes(g));
+                const matchesPlaytime = game.playtime >= minPlaytime && game.playtime <= maxPlaytime;
+                const matchesCompletion = game.completion >= minCompletion && game.completion <= maxCompletion;
+                return matchesGenre && matchesPlaytime && matchesCompletion;
+            }).slice(0, 5);
+        }
+
+        document.querySelector(".save-btn").addEventListener("click", () => {
+            const genres = [...document.querySelectorAll("input[name='genre']:checked")].map(g => g.value);
+            const minPlaytime = parseInt(document.querySelector("input[name='playtime-min']").value) || 0;
+            const maxPlaytime = parseInt(document.querySelector("input[name='playtime-max']").value) || Infinity;
+            const minCompletion = parseInt(document.querySelector("input[name='completion-min']").value) || 0;
+            const maxCompletion = parseInt(document.querySelector("input[name='completion-max']").value) || 100;
+
+            const rankedGames = filterAndRankGames(genres, minPlaytime, maxPlaytime, minCompletion, maxCompletion);
+            localStorage.setItem("rankedGames", JSON.stringify(rankedGames.map(g => g.title)));
+            window.location.href = "display_ranking_prototype.html";
+        });
+
+        document.getElementById("rankingPopup").style.display = "flex";
+    </script>
+</body>
 </html>
