@@ -1,6 +1,6 @@
 import React from "react";
-import DisplayRanking from "../../components/DisplayRanking";
-import TopButtons from "../../components/TopButtons";
+import DisplayRanking from "../components/DisplayRanking";
+import TopButtons from "../components/TopButtons";
 
 const DisplayRankingPage = () => {
   return (

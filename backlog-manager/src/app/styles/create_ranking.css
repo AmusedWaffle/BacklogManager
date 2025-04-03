@@ -77,10 +77,19 @@
     cursor: pointer;
     margin: 0;
     display: block;
+    position: relative;
+    transition: all 0.2s;
+    border-radius: 4px;
 }
 
 .dropdown-content a:hover {
-    background-color: #ddd;
+    background-color: #e9ecef;
+}
+
+.dropdown-content a.selected {
+    background-color: #e2f0fd;
+    color: #0056b3;
+    font-weight: bold;
 }
 
 .save-default {
@@ -153,3 +162,29 @@
     border: 1px solid #ddd;
     border-radius: 4px;
 }
+
+#completion-time input:focus {
+    outline: none;
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.selected-preferences {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    padding: 15px;
+    margin-top: 20px;
+    text-align: left;
+}
+
+.selected-preferences div {
+    margin-bottom: 8px;
+}
+
+.checkmark {
+    float: right;
+    color: #28a745;
+    font-weight: bold;
+}
+

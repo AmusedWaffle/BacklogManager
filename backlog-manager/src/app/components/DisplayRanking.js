@@ -1,7 +1,6 @@
-// components/DisplayRanking.js
 "use client";
 import React, { useState, useEffect } from "react";
-import "../styles/display-ranking.css";
+import "../styles/display_ranking.css";
 
 const DisplayRanking = () => {
   const [games, setGames] = useState([]);
@@ -21,17 +20,17 @@ const DisplayRanking = () => {
   const fetchRanking = async (token) => {
     try {
       setLoading(true);
-      const response = await fetch("http://128.113.126.87:5000/receive-ranking"/*, {
+      const response = await fetch("http://128.113.126.87:5000/receive-ranking", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ token }),
-      }*/);
+      });
 
-      //const data = await response.json();
+      const data = await response.json();
       if (response.ok) {
-        setGames(data.ranking || []);
+        setGames(data.ranked_games || []);
       } else {
         setError(data.message || "Failed to fetch ranking");
       }
