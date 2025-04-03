@@ -8,6 +8,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from sqlalchemy.sql.expression import func
 # pip install flask flask_sqlalchemy psycopg2 flask_cors
+rankings = {}
 
 app = Flask(__name__)
 CORS(app)
@@ -51,7 +52,7 @@ class Users(db.Model):
 class Preferences(db.Model):
     """Temporary table for user preferences."""
     email = db.Column(db.String(100), unique=True, nullable=False, primary_key=True)
-    prefer = db.Column(db.String(200), nullable=False)
+    preferences = db.Column(db.JSON, nullable=False)
 
     def __repr__(self):
         return f'<User {self.email}>'
@@ -197,6 +198,75 @@ def search_games():
     results = response.json().get('results', [])
     games = [{'id': game['id'], 'name': game['name']} for game in results]
     return jsonify({'results': games})
+
+@app.route('/save-default-preferences', methods=['POST'])
+def save_default_preferences():
+    """Saves user preferences to the database."""
+    data = request.json
+    token = data['token']
+    preferences = data['preferences']
+
+    user = Users.query.filter_by(session_token=token).first()
+    if not user:
+        return jsonify({'error': 'Invalid token'}), 401
+
+    existing_preferences = Preferences.query.filter_by(email=user.email).first()
+    if existing_preferences:
+        existing_preferences.preferences = preferences
+    else:
+        new_preferences = Preferences(email=user.email, preferences=preferences)
+        db.session.add(new_preferences)
+
+    db.session.commit()
+    return jsonify({'message': 'Preferences saved successfully'})
+
+@app.route('/parse-preferences', methods=['POST'])
+def parse_preferences():
+    """Ranks games based on the user's owned games and preferences, then sends ranking to frontend."""
+    if request.method == 'OPTIONS':
+        return '', 200
+    data = request.json
+    print(data)
+    token = data['token']
+    preferences = data['preferences']
+
+    user = Users.query.filter_by(session_token=token).first()
+    if not user:
+        return jsonify({'error': 'Invalid token'}), 401
+
+    user_games = Library.query.filter_by(email=user.email).all()
+    if not user_games:
+        print("nope")
+        return jsonify({'error': 'No owned games found'}), 404
+
+    game_ids = [game.gameid for game in user_games]
+    ranked_games = []
+    for game_id in game_ids:
+        response = requests.get(RAWG_GAME_DETAILS_URL.format(game_id), params={'key': API_KEY})
+        if response.status_code == 200:
+            game_data = response.json()
+            ranked_games.append({'name': game_data['name']})
+    rankings[user.email] = ranked_games
+    print(rankings[user.email])
+    return jsonify({"message": "Ranking sent to frontend"})
+
+@app.route('/receive-ranking', methods=['POST'])
+def receive_ranking():
+    """Returns the stored ranking of games."""
+    if request.method == 'OPTIONS':
+        return '', 200
+    data = request.json
+    print(data)
+    token = data['token']
+
+    user = Users.query.filter_by(session_token=token).first()
+    if not user:
+        return jsonify({'error': 'Invalid token'}), 401
+
+    if user.email not in rankings:
+        return jsonify({'error': 'No ranking found'}), 404
+    print(rankings[user.email])
+    return jsonify({"ranked_games": rankings[user.email]})
 
 def create_ranking():
     """Creates a game ranking."""
