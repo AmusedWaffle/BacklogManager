@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="top-buttons.css">
     <link rel="stylesheet" href="display_ranking.css">
+    <link rel="stylesheet" href="gamestats.css">
 </head>
 <body>
     <div class="top-buttons">
@@ -17,38 +18,68 @@
     <div class="main-header">
         <h1>My Ranking</h1>
     </div>
-
+    
     <div class="ranking-order">
-        <div class="top-5">
-            <div class="top-3">
-                <div class="frst-plce">
-                    <h2>#1: <span id="rank-1"></span></h2>
-                </div>
-                <div class="scnd-plce">
-                    <h2>#2: <span id="rank-2"></span></h2>
-                </div>
-                <div class="thrd-plce">
-                    <h2>#3: <span id="rank-3"></span></h2>
-                </div>
-            </div>
-            <div class="bottom-4-5">
-                <div class="frth-plce">
-                    <h2>#4: <span id="rank-4"></span></h2>
-                </div>
-                <div class="ffth-plce">
-                    <h2>#5: <span id="rank-5"></span></h2>
-                </div>
-            </div>
-        </div>
+        <div class="rank-slot" id="rank-1" onclick="showPopup(0)"></div>
+        <div class="rank-slot" id="rank-2" onclick="showPopup(1)"></div>
+        <div class="rank-slot" id="rank-3" onclick="showPopup(2)"></div>
+        <div class="rank-slot" id="rank-4" onclick="showPopup(3)"></div>
+        <div class="rank-slot" id="rank-5" onclick="showPopup(4)"></div>
     </div>
 
+    <div class="overlay" id="overlay" onclick="hidePopup()"></div>
+
+    <div class="game-popup" id="gamePopup">
+        <div class="popup-header">
+            <h2 id="popup-title"></h2>
+            <span id="popup-review"></span>
+        </div>
+        <div class="popup-body">
+            <img id="popup-cover" src="" alt="Game Cover">
+            <div id="popup-details"></div>
+        </div>
+    </div>
+    
     <script>
-        const titles = JSON.parse(localStorage.getItem("rankedGames")) || [];
-        for (let i = 0; i < 5; i++) {
-            const x = document.getElementById(`rank-${i + 1}`);
-            if (x && titles[i]) {
-                x.textContent = titles[i];
-            }
+        const games = JSON.parse(localStorage.getItem("rankedGames")) || [];
+    
+        games.forEach((game, i) => {
+        const container = document.getElementById(`rank-${i + 1}`);
+        if (!container) return;
+    
+        container.innerHTML = `
+            <h2>#${i + 1}: ${game.title}</h2>
+            <div class="hover-card">
+            <p>Playtime: ${game.playtime} hrs</p>
+            <p>Completion: ${game.completion}%</p>
+            <p>Reviews: ${game.review}</p>
+            </div>
+        `;
+        });
+    
+        function showPopup(index) {
+        const game = games[index];
+        if (!game) return;
+    
+        document.getElementById("popup-title").textContent = game.title;
+        document.getElementById("popup-review").textContent = `Reviews: ${game.review}`;
+        document.getElementById("popup-cover").src = game.cover;
+        document.getElementById("popup-details").innerHTML = `
+            <p><strong>Released:</strong> ${game.release} by ${game.developer}</p>
+            <p><strong>Genre:</strong> ${game.genre.join(", ")}</p>
+            <p><strong>Platforms:</strong> ${game.platforms.join(", ")}</p>
+            <p><strong>Awards:</strong> ${game.awards.join(", ")}</p>
+            <p><strong>Playtime:</strong> ${game.playtime} hrs</p>
+            <p><strong>Completion Status:</strong> ${game.completion}%</p>
+        `;
+    
+        document.getElementById("gamePopup").style.display = "block";
+        document.getElementById("overlay").style.display = "block";
+        }
+    
+        function hidePopup() {
+        document.getElementById("gamePopup").style.display = "none";
+        document.getElementById("overlay").style.display = "none";
         }
     </script>
 </body>

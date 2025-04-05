@@ -53,9 +53,42 @@
 
     <script>
         const exampleGames = [
-            { title: "Elden Ring", genre: ["RPG", "Action"], playtime: 100, completion: 90 },
-            { title: "Hollow Knight", genre: ["Action", "Adventure"], playtime: 40, completion: 80 },
-            { title: "DOOM Eternal", genre: ["FPS", "Action"], playtime: 20, completion: 95 }
+            {
+                title: "Elden Ring",
+                playtime: 100,
+                completion: 90,
+                review: "10/10",
+                release: "January 21, 2022",
+                developer: "FromSoftware",
+                genre: ["RPG", "Action"],
+                platforms: ["PS4", "PS5", "Xbox Series X and S", "Xbox One", "Windows"],
+                awards: ["Game of the Year", "Best Art Direction", "Best Game Direction"],
+                cover: "elden_ring_cover.jpg"
+            },
+            {
+                title: "Hollow Knight",
+                playtime: 40,
+                completion: 80,
+                review: "9/10",
+                release: "February 24, 2017",
+                developer: "Team Cherry",
+                genre: ["Action", "Adventure"],
+                platforms: ["PC", "Switch", "PS4", "Xbox One"],
+                awards: ["Best Indie Game"],
+                cover: "hollow_knight_cover.jpg"
+            },
+            {
+                title: "DOOM Eternal",
+                playtime: 20,
+                completion: 95,
+                review: "9.5/10",
+                release: "March 20, 2020",
+                developer: "id Software",
+                genre: ["FPS", "Action"],
+                platforms: ["PC", "PS4", "Xbox One", "Stadia"],
+                awards: ["Best Action Game"],
+                cover: "doom_eternal_cover.jpg"
+            }
         ];
 
         function filterAndRankGames(selectedGenres, minPlaytime, maxPlaytime, minCompletion, maxCompletion) {
@@ -75,7 +108,7 @@
             const maxCompletion = parseInt(document.querySelector("input[name='completion-max']").value) || 100;
 
             const rankedGames = filterAndRankGames(genres, minPlaytime, maxPlaytime, minCompletion, maxCompletion);
-            localStorage.setItem("rankedGames", JSON.stringify(rankedGames.map(g => g.title)));
+            localStorage.setItem("rankedGames", JSON.stringify(rankedGames));
             window.location.href = "display_ranking_prototype.html";
         });
 
