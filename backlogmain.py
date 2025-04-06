@@ -205,6 +205,7 @@ def save_default_preferences():
     data = request.json
     token = data['token']
     preferences = data['preferences']
+    use_reviews = data['use_reviews']
 
     user = Users.query.filter_by(session_token=token).first()
     if not user:
@@ -229,6 +230,7 @@ def parse_preferences():
     print(data)
     token = data['token']
     preferences = data['preferences']
+    use_reviews = data['use_reviews']
 
     user = Users.query.filter_by(session_token=token).first()
     if not user:
@@ -267,6 +269,23 @@ def receive_ranking():
         return jsonify({'error': 'No ranking found'}), 404
     print(rankings[user.email])
     return jsonify({"ranked_games": rankings[user.email]})
+
+@app.route('/get-game-stats', methods=['POST'])
+def get_game_stats():
+    data = request.json
+    game_id = data['game_id']
+    response = requests.get(RAWG_GAME_DETAILS_URL.format(game_id), params={'key': API_KEY})
+    if response.status_code == 200:
+        game_data = response.json()
+        game_stats = {'title': game_data['name'],
+                      'rating': game_data['rating'],
+                      'cover': game_data['background_image'],
+                      'releaseDate': game_data['released'],
+                      'developer': [dev['name'] for dev in game_data['developers']],
+                      'genres': [genre['name'] for genre in game_data['genres']],
+                      'platforms': [plat['name'] for plat in game_data['platforms']],
+                      'reviews': game_data['ratings']}     
+    return jsonify({'game_stats': game_stats})
 
 def create_ranking():
     """Creates a game ranking."""
