@@ -9,7 +9,8 @@ const CreateRanking = () => {
       genres: [],
       completionTime: null,
       esrbRatings: [],
-      platforms: []
+      platforms: [],
+      useReviews: false
     });
     const [showDropdown, setShowDropdown] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -38,6 +39,13 @@ const CreateRanking = () => {
         };
       });
       setSubmitError(null);
+    };
+
+    const toggleUseReviews = () => {
+      setPreferences(prev => ({
+        ...prev,
+        useReviews: !prev.useReviews
+      }));
     };
 
     const handleCompletionTimeChange = (value) => {
@@ -76,10 +84,10 @@ const CreateRanking = () => {
             token,
             preferences: {
               ...preferences,
-              // Convert arrays to comma-separated strings if backend expects that
               genre: preferences.genres.join(","),
               esrbRating: preferences.esrbRatings.join(","),
-              platforms: preferences.platforms.join(",")
+              platforms: preferences.platforms.join(","),
+              use_reviews: preferences.useReviews
             }
           }),
         });
@@ -122,7 +130,8 @@ const CreateRanking = () => {
               ...preferences,
               genre: preferences.genres.join(","),
               esrbRating: preferences.esrbRatings.join(","),
-              platforms: preferences.platforms.join(",")
+              platforms: preferences.platforms.join(","),
+              use_reviews: preferences.useReviews
             }
           }),
         });
@@ -172,6 +181,9 @@ const CreateRanking = () => {
                   <strong>Completion Time:</strong> {preferences.completionTime} hours
                 </div>
               )}
+              <div>
+                <strong>Use Reviews:</strong> {preferences.useReviews ? "Yes" : "No"}
+              </div>
             </div>
           )}
         </div>
@@ -275,6 +287,17 @@ const CreateRanking = () => {
               </div>
             )}
           </div>
+        </div>
+
+        <div className="reviews-toggle">
+          <label>
+            <input
+              type="checkbox"
+              checked={preferences.useReviews}
+              onChange={toggleUseReviews}
+            />
+            Include game reviews in ranking algorithm
+          </label>
         </div>
 
         <button 
