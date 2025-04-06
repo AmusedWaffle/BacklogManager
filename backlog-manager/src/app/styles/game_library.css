@@ -209,3 +209,56 @@ body {
   cursor: context-menu;
   user-select: none; 
 }
+
+.stats-loading,
+.stats-error {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 20px;
+  border-radius: 5px;
+  z-index: 101;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+
+.stats-error {
+  color: #dc3545;
+}
+
+.added-game {
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.added-game:hover {
+  background-color: #f0f0f0;
+}
+
+.game-hover-card {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: white;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  width: 200px;
+  z-index: 10;
+}
+
+.added-game:hover .game-hover-card {
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .game-hover-card {
+    left: 50%;
+    transform: translateX(-50%);
+    width: 180px;
+  }
+}

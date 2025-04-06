@@ -2,6 +2,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import "../styles/game_library.css";
+import GameStats from "./GameStats";
 
 const GameLibrary = () => {
   const [userGames, setUserGames] = useState([]);
@@ -12,6 +13,9 @@ const GameLibrary = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchLoading, setSearchLoading] = useState(false);
+  const [gameStats, setGameStats] = useState(null);
+  const [statsLoading, setStatsLoading] = useState(false);
+  const [statsError, setStatsError] = useState(null);
   const [contextMenu, setContextMenu] = useState({
     visible: false,
     x: 0,
@@ -51,6 +55,43 @@ const GameLibrary = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [showPopup, contextMenu]); // Dependencies ensure proper cleanup
+
+  const fetchGameStats = async (gameId) => {
+    const token = localStorage.getItem("token");
+    if (!token || !gameId) return;
+
+    try {
+      setStatsLoading(true);
+      setStatsError(null);
+      
+      const response = await fetch("http://128.113.126.87:5000/get-game-stats", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ 
+          token,
+          game_id: gameId 
+        }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        setGameStats(data.game_stats);
+      } else {
+        throw new Error(data.message || "Failed to fetch game stats");
+      }
+    } catch (err) {
+      setStatsError(err.message);
+    } finally {
+      setStatsLoading(false);
+    }
+  };
+
+  const handleGameClick = (game) => {
+    fetchGameStats(game.id);
+  };
+
 
   // Function to load in the games a user has when page is loaded
   // sends token as authentication for backend to check
@@ -264,13 +305,18 @@ const GameLibrary = () => {
 
       <div className="added-games-container">
         {userGames.length > 0 ? (
-          userGames.map((game, index) => (
+          userGames.map((game) => (
             <div 
-              key={index} 
+              key={game.id}
               className="added-game"
-              onContextMenu={(e) => handleGameRightClick(e, game)}
+              onClick={() => handleGameClick(game)}
             >
               {game.name}
+              <div className="game-hover-card">
+                <p>Click for details</p>
+                {game.playtime && <p>Playtime: {game.playtime} hrs</p>}
+                {game.completion && <p>Completion: {game.completion}%</p>}
+              </div>
             </div>
           ))
         ) : (
@@ -343,6 +389,14 @@ const GameLibrary = () => {
         </div>
       </div>
     )}
+    {gameStats && (
+        <GameStats 
+          gameStats={gameStats}
+          onClose={() => setGameStats(null)}
+        />
+    )}
+    {statsLoading && <div className="loading">Loading game details...</div>}
+    {statsError && <div className="error">{statsError}</div>}
     </div>
   );
 };

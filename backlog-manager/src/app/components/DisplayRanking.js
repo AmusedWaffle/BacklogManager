@@ -1,11 +1,15 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import GameStats from "./GameStats";
 import "../styles/display_ranking.css";
 
 const DisplayRanking = () => {
   const [games, setGames] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [gameStats, setGameStats] = useState(null);
+  const [statsLoading, setStatsLoading] = useState(false);
+  const [statsError, setStatsError] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -13,7 +17,6 @@ const DisplayRanking = () => {
       window.location.href = "/";
       return;
     }
-
     fetchRanking(token);
   }, []);
 
@@ -30,7 +33,13 @@ const DisplayRanking = () => {
 
       const data = await response.json();
       if (response.ok) {
-        setGames(data.ranked_games || []);
+        // Ensure games have both id and name
+        const validatedGames = (data.ranked_games || []).map(game => ({
+          id: game.id || `temp-${Math.random().toString(36).substr(2, 9)}`,
+          name: game.name || `Unknown Game`,
+          ...game
+        }));
+        setGames(validatedGames);
       } else {
         setError(data.message || "Failed to fetch ranking");
       }
@@ -41,13 +50,55 @@ const DisplayRanking = () => {
     }
   };
 
-  if (loading) {
-    return <div className="loading">Loading your ranking...</div>;
-  }
+  const fetchGameStats = async (gameId, gameName) => {
+    const token = localStorage.getItem("token");
+    if (!token || !gameId) {
+      console.error("Missing token or game ID");
+      return;
+    }
 
-  if (error) {
-    return <div className="error">{error}</div>;
-  }
+    try {
+      setStatsLoading(true);
+      setStatsError(null);
+      
+      const response = await fetch("http://128.113.126.87:5000/get-game-stats", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ 
+          token,
+          game_id: gameId,
+          game_name: gameName
+        }),
+      });
+
+      const data = await response.json();
+      
+      if (response.ok) {
+        setGameStats({
+          ...data.game_stats,
+          id: gameId,
+          title: gameName
+        });
+      } else {
+        throw new Error(data.message || "Failed to fetch game stats");
+      }
+    } catch (err) {
+      console.error("Error fetching game stats:", err);
+      setStatsError(err.message);
+    } finally {
+      setStatsLoading(false);
+    }
+  };
+
+  const handleGameClick = (game) => {
+    if (!game?.id) {
+      console.error("Game object missing ID:", game);
+      return;
+    }
+    fetchGameStats(game.id, game.name);
+  };
 
   const renderGame = (game, index) => {
     const rank = index + 1;
@@ -72,12 +123,34 @@ const DisplayRanking = () => {
     };
 
     return (
-      <div key={index} className={placeClass}>
+      <div 
+        key={game.id} 
+        className={`${placeClass} has-hover-card`}
+        onClick={() => handleGameClick(game)}
+      >
         {renderHeading()}
-        <button>{game.name || `Game ${rank}`}</button>
+        <button onClick={(e) => {
+          e.stopPropagation();
+          handleGameClick(game);
+        }}>
+          {game.name || `Game ${rank}`}
+        </button>
+        <div className="hover-card">
+          <p>Click for details</p>
+          {game.playtime && <p>Playtime: {game.playtime} hrs</p>}
+          {game.completion && <p>Completion: {game.completion}%</p>}
+        </div>
       </div>
     );
   };
+
+  if (loading) {
+    return <div className="loading">Loading your ranking...</div>;
+  }
+
+  if (error) {
+    return <div className="error">{error}</div>;
+  }
 
   const topGames = games.slice(0, 3);
   const middleGames = games.slice(3, 5);
@@ -112,6 +185,20 @@ const DisplayRanking = () => {
           <p>No games in your ranking yet.</p>
         )}
       </div>
+
+      {gameStats && (
+        <GameStats
+          gameStats={gameStats} 
+          onClose={() => setGameStats(null)} 
+        />
+      )}
+
+      {statsLoading && (
+        <div className="stats-loading">Loading game details...</div>
+      )}
+      {statsError && (
+        <div className="stats-error">{statsError}</div>
+      )}
     </div>
   );
 };
