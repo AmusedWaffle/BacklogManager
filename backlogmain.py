@@ -143,7 +143,6 @@ def add_game():
 def delete_game():
     """WPI API route to delete game for a user: http://127.0.0.1:5000/delete-game."""
     data = request.json
-    print(data)
     token = data['token']
     rawg_id = data['game_id']
 
@@ -205,7 +204,6 @@ def save_default_preferences():
     data = request.json
     token = data['token']
     preferences = data['preferences']
-    use_reviews = data['use_reviews']
 
     user = Users.query.filter_by(session_token=token).first()
     if not user:
@@ -227,10 +225,8 @@ def parse_preferences():
     if request.method == 'OPTIONS':
         return '', 200
     data = request.json
-    print(data)
     token = data['token']
     preferences = data['preferences']
-    use_reviews = data['use_reviews']
 
     user = Users.query.filter_by(session_token=token).first()
     if not user:
@@ -247,9 +243,8 @@ def parse_preferences():
         response = requests.get(RAWG_GAME_DETAILS_URL.format(game_id), params={'key': API_KEY})
         if response.status_code == 200:
             game_data = response.json()
-            ranked_games.append({'name': game_data['name']})
+            ranked_games.append({'id': game_id, 'name': game_data['name']})
     rankings[user.email] = ranked_games
-    print(rankings[user.email])
     return jsonify({"message": "Ranking sent to frontend"})
 
 @app.route('/receive-ranking', methods=['POST'])
@@ -258,7 +253,6 @@ def receive_ranking():
     if request.method == 'OPTIONS':
         return '', 200
     data = request.json
-    print(data)
     token = data['token']
 
     user = Users.query.filter_by(session_token=token).first()
@@ -267,7 +261,6 @@ def receive_ranking():
 
     if user.email not in rankings:
         return jsonify({'error': 'No ranking found'}), 404
-    print(rankings[user.email])
     return jsonify({"ranked_games": rankings[user.email]})
 
 @app.route('/get-game-stats', methods=['POST'])
@@ -283,7 +276,7 @@ def get_game_stats():
                       'releaseDate': game_data['released'],
                       'developer': [dev['name'] for dev in game_data['developers']],
                       'genres': [genre['name'] for genre in game_data['genres']],
-                      'platforms': [plat['name'] for plat in game_data['platforms']],
+                      'platforms': [plat['platform']['name'] for plat in game_data['platforms']],
                       'reviews': game_data['ratings']}     
     return jsonify({'game_stats': game_stats})
 
