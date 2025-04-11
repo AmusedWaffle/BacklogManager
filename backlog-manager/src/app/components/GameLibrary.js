@@ -309,11 +309,15 @@ const GameLibrary = () => {
             <div 
               key={game.id}
               className="added-game"
-              onClick={() => handleGameClick(game)}
             >
               {game.name}
               <div className="game-hover-card">
-                <p>Click for details</p>
+                <div onClick={() => handleGameClick(game)}>
+                  <p>Click for details</p>
+                </div>
+                <div onContextMenu={(e) => handleGameRightClick(e, game)}>
+                  Delete Game
+                </div>
                 {game.playtime && <p>Playtime: {game.playtime} hrs</p>}
                 {game.completion && <p>Completion: {game.completion}%</p>}
               </div>
