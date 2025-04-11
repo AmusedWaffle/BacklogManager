@@ -289,14 +289,19 @@ def create_ranking(preferences, game_ids, user):
 def weight_game(preferences, game_data):
     """Weights a game based on user preferences."""
     weight = 100
-    weight = weight - abs(preferences['completionTime'] - game_data['playtime'])
-    if game_data['esrb_rating']['name'] == preferences['esrbRating']:
-        weight += 50
-    for platform in game_data['platforms']:
-        if platform['name'] == preferences['platform']:
+    if type(preferences['completionTime']) == int and type(game_data['playtime']) == int:
+        weight = weight - abs(preferences['completionTime'] - game_data['playtime'])
+    if game_data['esrb_rating'] != None and preferences['esrbRating'] != None:
+        if game_data['esrb_rating']['name'] in preferences['esrbRating']:
             weight += 50
-    if game_data['genre'] == preferences['genre']:
-        weight += 50
+    if preferences['platforms'] != None:
+        for platform in game_data['platforms']:
+            if platform['name'] in preferences['platforms']:
+                weight += 50
+    if preferences['genre'] != None:
+        for genre in game_data['genres']:
+            if genre['name'] in preferences['genre']:
+                weight += 50
     if preferences['use_reviews']:
         weight += game_data['metacritic']
     return weight
