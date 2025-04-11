@@ -238,13 +238,7 @@ def parse_preferences():
         return jsonify({'error': 'No owned games found'}), 404
 
     game_ids = [game.gameid for game in user_games]
-    ranked_games = []
-    for game_id in game_ids:
-        response = requests.get(RAWG_GAME_DETAILS_URL.format(game_id), params={'key': API_KEY})
-        if response.status_code == 200:
-            game_data = response.json()
-            ranked_games.append({'id': game_id, 'name': game_data['name']})
-    rankings[user.email] = ranked_games
+    create_ranking(preferences, game_ids, user)
     return jsonify({"message": "Ranking sent to frontend"})
 
 @app.route('/receive-ranking', methods=['POST'])
@@ -280,7 +274,7 @@ def get_game_stats():
                       'reviews': game_data['ratings']}     
     return jsonify({'game_stats': game_stats})
 
-def create_ranking():
+def create_ranking(preferences, game_ids, user):
     """Creates a game ranking."""
     ranked_games = []
     for game_id in game_ids:
