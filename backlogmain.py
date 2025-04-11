@@ -282,8 +282,36 @@ def get_game_stats():
 
 def create_ranking():
     """Creates a game ranking."""
-    random_ranking = Game.query.order_by(func.random()).limit(10).all()
-    return random_ranking
+    ranked_games = []
+    for game_id in game_ids:
+        response = requests.get(RAWG_GAME_DETAILS_URL.format(game_id), params={'key': API_KEY})
+        if response.status_code == 200:
+            game_data = response.json()
+            ranked_games.append({'id': game_id, 'weight': weight_game(preferences, game_data), 'name': game_data['name']})
+    ranked_games.sort(key=lambda x: x['weight'], reverse=True)
+    rankings[user.email] = ranked_games
+    return ranked_games
+
+def weight_game(preferences, game_data):
+    """Weights a game based on user preferences."""
+    weight = 100
+    if type(preferences['completionTime']) == int and type(game_data['playtime']) == int:
+        weight = weight - abs(preferences['completionTime'] - game_data['playtime'])
+    if game_data['esrb_rating'] != None and preferences['esrbRating'] != None:
+        if game_data['esrb_rating']['name'] in preferences['esrbRating']:
+            weight += 50
+    if preferences['platforms'] != None:
+        for platform in game_data['platforms']:
+            if platform['platform']['name'] in preferences['platforms']:
+                weight += 50
+    if preferences['genre'] != None:
+        for genre in game_data['genres']:
+            if genre['name'] in preferences['genre']:
+                weight += 50
+    if game_data['metacritic'] != None:
+        if preferences['use_reviews']:
+            weight += game_data['metacritic']
+    return weight
 
 def generate_token():
     """Generates a new session token."""
