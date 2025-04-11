@@ -281,7 +281,7 @@ def create_ranking(preferences, game_ids, user):
         response = requests.get(RAWG_GAME_DETAILS_URL.format(game_id), params={'key': API_KEY})
         if response.status_code == 200:
             game_data = response.json()
-            ranked_games.append({'id': game_id, 'weight': weight_game(preferences, game_data)})
+            ranked_games.append({'id': game_id, 'weight': weight_game(preferences, game_data), 'name': game_data['name']})
     ranked_games.sort(key=lambda x: x['weight'], reverse=True)
     rankings[user.email] = ranked_games
     return ranked_games
@@ -289,8 +289,8 @@ def create_ranking(preferences, game_ids, user):
 def weight_game(preferences, game_data):
     """Weights a game based on user preferences."""
     weight = 100
-    weight = weight - abs(preferences['completion time'] - game_data['playtime'])
-    if game_data['esrb_rating']['name'] == preferences['esrb rating']:
+    weight = weight - abs(preferences['completionTime'] - game_data['playtime'])
+    if game_data['esrb_rating']['name'] == preferences['esrbRating']:
         weight += 50
     for platform in game_data['platforms']:
         if platform['name'] == preferences['platform']:
