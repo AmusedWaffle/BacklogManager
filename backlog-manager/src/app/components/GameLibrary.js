@@ -299,7 +299,6 @@ const GameLibrary = () => {
 
       <div className="middle-buttons">
         <button onClick={openGamePopup}>+ Add Game</button>
-        <button onClick={() => {}}>A-Z</button>
       </div>
 
       <div className="added-games-container">

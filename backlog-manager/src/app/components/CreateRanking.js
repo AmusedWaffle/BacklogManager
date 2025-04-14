@@ -209,7 +209,6 @@ const CreateRanking = () => {
                 <div id="genre">
                   <p>Genre</p>
                   {[
-                    "Free Online Games", 
                     "Action", 
                     "Strategy", 
                     "RPG", 
