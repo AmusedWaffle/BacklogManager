@@ -283,13 +283,16 @@ def get_game_stats():
     if response.status_code == 200:
         game_data = response.json()
         game_stats = {'title': game_data['name'],
-                      'rating': game_data['rating'],
                       'cover': game_data['background_image'],
                       'releaseDate': game_data['released'],
                       'developer': [dev['name'] for dev in game_data['developers']],
                       'genres': [genre['name'] for genre in game_data['genres']],
                       'platforms': [plat['platform']['name'] for plat in game_data['platforms']],
                       'reviews': game_data['ratings']}
+        if game_data.get('esrb_rating'):
+            game_stats['rating'] = game_data['esrb_rating']['name']
+        else:
+            game_stats['rating'] = "None"
     return jsonify({'game_stats': game_stats})
 
 if __name__ == '__main__':
