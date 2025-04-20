@@ -25,7 +25,7 @@ const GameLibrary = () => {
   const popupRef = useRef(null);
 
   // Check if user is logged in and fetch games on component mount
-  // redirects to homepage if user is not logged in
+  // Redirects to homepage if user is not logged in
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -55,14 +55,21 @@ const GameLibrary = () => {
     };
   }, [showPopup, contextMenu]); // Dependencies ensure proper cleanup
 
+  // Function to fetch game stats for pop-up
   const fetchGameStats = async (gameId) => {
+
+    // Grab token from local storage
     const token = localStorage.getItem("token");
+
+    // Really good error handling
     if (!token || !gameId) return;
 
     try {
+      // There's no error & we're now loading what we need
       setStatsLoading(true);
       setStatsError(null);
       
+      // Ask backend for stats
       const response = await fetch("http://128.113.126.87:5000/get-game-stats", {
         method: "POST",
         headers: {
@@ -75,6 +82,8 @@ const GameLibrary = () => {
       });
 
       const data = await response.json();
+
+      // Amazing error handling
       if (response.ok) {
         setGameStats(data.game_stats);
       } else {
@@ -87,17 +96,22 @@ const GameLibrary = () => {
     }
   };
 
+  // Gets game stats on click
   const handleGameClick = (game) => {
     fetchGameStats(game.id);
   };
 
 
   // Function to load in the games a user has when page is loaded
-  // sends token as authentication for backend to check
+  // Sends token as authentication for backend to check
   // Receives a JSON with the user's games from backend
   const fetchUserGames = async (token) => {
     try {
+
+      // We're now loading relevant information
       setLoading(true);
+
+      // Yell at backend for data
       const response = await fetch(
         "http://128.113.126.87:5000/get-games-library",
         {
@@ -110,6 +124,8 @@ const GameLibrary = () => {
       );
   
       const data = await response.json();
+
+      // Error handling based on response
       if (response.ok) {
         // Handle both response formats:
         const gamesArray = Array.isArray(data) ? data : data.games || [];
@@ -130,11 +146,19 @@ const GameLibrary = () => {
   // Receives JSON of unowned games that match the search query
   // Response format: [{'id': game_id, 'name': game_name}, ...]
   const searchGames = async (query) => {
+
+    // Grab token from local storage 
     const token = localStorage.getItem("token");
+
+    // Rudimentary error handling
     if (!token || !query.trim()) return;
 
     try {
+
+      // We're loading what we need
       setSearchLoading(true);
+
+      // Annoy backend for data
       const response = await fetch("http://128.113.126.87:5000/search-games", {
         method: "POST",
         headers: {
@@ -144,6 +168,8 @@ const GameLibrary = () => {
       });
 
       const data = await response.json();
+
+      // Error handling + if response is good
       if (response.ok) {
         setSearchResults(data.results || []);
       } else {
@@ -178,20 +204,27 @@ const GameLibrary = () => {
   };
 
   // Tells backend to add the selected game to the user's library
-  // Sends token for authentication along with game ID and name
+  // Sends token for authentication along with game ID and name 
+  // but NOT in the "authorization" header
   // Receives a JSON with the selected game
   const addSelectedGame = async () => {
+    
+    // Error handling
     if (!selectedGame.id || !selectedGame.name) {
       alert("Please select a game before adding.");
       return;
     }
 
+    // Grab token from local storage 
     const token = localStorage.getItem("token");
+
+    // Return to homepage if no token
     if (!token) {
       window.location.href = "/";
       return;
     }
 
+    // Pester backend for data
     try {
       const response = await fetch("http://128.113.126.87:5000/add-game", {
         method: "POST",
@@ -206,6 +239,8 @@ const GameLibrary = () => {
       });
 
       const data = await response.json();
+
+      // Handle response + errors
       if (response.ok) {
         setUserGames([...userGames, { 
           id: selectedGame.id, 
@@ -246,20 +281,24 @@ const GameLibrary = () => {
 
   // Delete game from library
   const deleteGame = async () => {
+
+    // Error handling
     if (!contextMenu.game || !contextMenu.game.id) {
       console.error("No game ID available for deletion");
       alert("Unable to delete - missing game ID");
       return;
     }
     
-    console.log("Deleting game:", contextMenu.game); // Debug log
-    
+    // Get token from local storage
     const token = localStorage.getItem("token");
+
+    // Return home if no token
     if (!token) {
       window.location.href = "/";
       return;
     }
   
+    // Ask backend for data
     try {
       const response = await fetch("http://128.113.126.87:5000/delete-game", {
         method: "POST",
@@ -274,6 +313,8 @@ const GameLibrary = () => {
       });
   
       const data = await response.json();
+
+      // Response handling
       if (response.ok) {
         setUserGames(userGames.filter(g => g.id !== contextMenu.game.id));
       } else {
