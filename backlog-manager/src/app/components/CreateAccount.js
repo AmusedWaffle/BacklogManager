@@ -24,6 +24,16 @@ const CreateAccount = () => {
   // Receives back login token
   // Saves it to local browser storage
   const handleSubmit = async (e) => {
+
+    try{
+      var assert = require("assert");
+      assert(formData.password == formData.confirmPassword);
+    } catch (error) {
+      console.error(error);
+      setMessage("Passwords must match");
+      return;
+    }
+
     e.preventDefault();
     console.log("Form submitted:", formData);
 
