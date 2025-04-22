@@ -15,7 +15,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Connection: MAKE SURE TO REPLACE USERNAME:PASSWORD WITH THE ONE SET UP ON YOUR OWN DEVICE
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://knighk4:1234@localhost/backlog_manager'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://user:1234@localhost/backlog_manager'
 
 db = SQLAlchemy(app)
 
@@ -36,6 +36,7 @@ with app.app_context():
     db.create_all()
 
 # Allow requests from frontend
+# First time users set orgins to the frontend url
 CORS(app, resources={r"/*": {"origins": "http://128.113.126.87:3000"}})
 
 class Users(db.Model):
