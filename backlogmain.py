@@ -222,7 +222,11 @@ def get_default_preferences():
     
     preferences = Preferences.query.filter_by(email=user.email).first()
 
-    return preferences
+    if preferences:
+        return jsonify({'preferences': preferences.preferences})
+    else:
+        return jsonify({'error': 'No preferences found'}), 404
+    
 
 @app.route('/save-default-preferences', methods=['POST'])
 def save_default_preferences():
