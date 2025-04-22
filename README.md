@@ -61,5 +61,5 @@ Frontend:
 
 
 [![linting: pylint](https://img.shields.io/badge/linting-pylint-yellowgreen)](https://github.com/pylint-dev/pylint)
-[![linting: Prettier](https://img.shields.io/badge/linting-pylint-yellowgreen)](https://prettier.io)
+[![linting: Prettier](https://img.shields.io/badge/linting-prettier-yellowgreen)](https://prettier.io)
 
