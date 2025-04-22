@@ -242,11 +242,17 @@ const GameLibrary = () => {
 
       // Handle response + errors
       if (response.ok) {
-        setUserGames([...userGames, { 
-          id: selectedGame.id, 
-          name: selectedGame.name 
-        }]);
-        closeGamePopup();
+
+        // Only add the game if game isn't already added
+        if(data.message != "Game already added"){
+          setUserGames([...userGames, { 
+            id: selectedGame.id, 
+            name: selectedGame.name 
+          }]);
+          closeGamePopup();
+        }else{
+          alert(data.message || "Failed to add game");
+        }
       } else {
         alert(data.message || "Failed to add game");
       }
