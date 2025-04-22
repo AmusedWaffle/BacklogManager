@@ -19,7 +19,7 @@ const GameLibrary = () => {
     visible: false,
     x: 0,
     y: 0,
-    game: null
+    game: null,
   });
   const contextMenuRef = useRef(null);
   const popupRef = useRef(null);
@@ -40,15 +40,23 @@ const GameLibrary = () => {
   useEffect(() => {
     const handleClickOutside = (event) => {
       // Close popup if clicking outside of it
-      if (showPopup && popupRef.current && !popupRef.current.contains(event.target)) {
+      if (
+        showPopup &&
+        popupRef.current &&
+        !popupRef.current.contains(event.target)
+      ) {
         closeGamePopup();
       }
       // Close context menu if clicking outside of it
-      if (contextMenu.visible && contextMenuRef.current && !contextMenuRef.current.contains(event.target)) {
+      if (
+        contextMenu.visible &&
+        contextMenuRef.current &&
+        !contextMenuRef.current.contains(event.target)
+      ) {
         setContextMenu({ ...contextMenu, visible: false });
       }
     };
-  
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
@@ -57,7 +65,6 @@ const GameLibrary = () => {
 
   // Function to fetch game stats for pop-up
   const fetchGameStats = async (gameId) => {
-
     // Grab token from local storage
     const token = localStorage.getItem("token");
 
@@ -68,18 +75,21 @@ const GameLibrary = () => {
       // There's no error & we're now loading what we need
       setStatsLoading(true);
       setStatsError(null);
-      
+
       // Ask backend for stats
-      const response = await fetch("http://128.113.126.87:5000/get-game-stats", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        "http://128.113.126.87:5000/get-game-stats",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            token,
+            game_id: gameId,
+          }),
         },
-        body: JSON.stringify({ 
-          token,
-          game_id: gameId 
-        }),
-      });
+      );
 
       const data = await response.json();
 
@@ -101,13 +111,11 @@ const GameLibrary = () => {
     fetchGameStats(game.id);
   };
 
-
   // Function to load in the games a user has when page is loaded
   // Sends token as authentication for backend to check
   // Receives a JSON with the user's games from backend
   const fetchUserGames = async (token) => {
     try {
-
       // We're now loading relevant information
       setLoading(true);
 
@@ -117,12 +125,12 @@ const GameLibrary = () => {
         {
           method: "POST",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({ token }),
-        }
+        },
       );
-  
+
       const data = await response.json();
 
       // Error handling based on response
@@ -146,15 +154,13 @@ const GameLibrary = () => {
   // Receives JSON of unowned games that match the search query
   // Response format: [{'id': game_id, 'name': game_name}, ...]
   const searchGames = async (query) => {
-
-    // Grab token from local storage 
+    // Grab token from local storage
     const token = localStorage.getItem("token");
 
     // Rudimentary error handling
     if (!token || !query.trim()) return;
 
     try {
-
       // We're loading what we need
       setSearchLoading(true);
 
@@ -204,18 +210,17 @@ const GameLibrary = () => {
   };
 
   // Tells backend to add the selected game to the user's library
-  // Sends token for authentication along with game ID and name 
+  // Sends token for authentication along with game ID and name
   // but NOT in the "authorization" header
   // Receives a JSON with the selected game
   const addSelectedGame = async () => {
-    
     // Error handling
     if (!selectedGame.id || !selectedGame.name) {
       alert("Please select a game before adding.");
       return;
     }
 
-    // Grab token from local storage 
+    // Grab token from local storage
     const token = localStorage.getItem("token");
 
     // Return to homepage if no token
@@ -231,10 +236,10 @@ const GameLibrary = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           token,
           game_id: selectedGame.id,
-          game_name: selectedGame.name 
+          game_name: selectedGame.name,
         }),
       });
 
@@ -242,15 +247,17 @@ const GameLibrary = () => {
 
       // Handle response + errors
       if (response.ok) {
-
         // Only add the game if game isn't already added
-        if(data.message != "Game already added"){
-          setUserGames([...userGames, { 
-            id: selectedGame.id, 
-            name: selectedGame.name 
-          }]);
+        if (data.message != "Game already added") {
+          setUserGames([
+            ...userGames,
+            {
+              id: selectedGame.id,
+              name: selectedGame.name,
+            },
+          ]);
           closeGamePopup();
-        }else{
+        } else {
           alert(data.message || "Failed to add game");
         }
       } else {
@@ -279,22 +286,21 @@ const GameLibrary = () => {
       x: e.clientX,
       y: e.clientY,
       game: {
-        id: game.id, 
-        name: game.name
-      }
+        id: game.id,
+        name: game.name,
+      },
     });
   };
 
   // Delete game from library
   const deleteGame = async () => {
-
     // Error handling
     if (!contextMenu.game || !contextMenu.game.id) {
       console.error("No game ID available for deletion");
       alert("Unable to delete - missing game ID");
       return;
     }
-    
+
     // Get token from local storage
     const token = localStorage.getItem("token");
 
@@ -303,7 +309,7 @@ const GameLibrary = () => {
       window.location.href = "/";
       return;
     }
-  
+
     // Ask backend for data
     try {
       const response = await fetch("http://128.113.126.87:5000/delete-game", {
@@ -314,15 +320,15 @@ const GameLibrary = () => {
         body: JSON.stringify({
           token,
           game_id: contextMenu.game.id,
-          game_name: contextMenu.game.name
+          game_name: contextMenu.game.name,
         }),
       });
-  
+
       const data = await response.json();
 
       // Response handling
       if (response.ok) {
-        setUserGames(userGames.filter(g => g.id !== contextMenu.game.id));
+        setUserGames(userGames.filter((g) => g.id !== contextMenu.game.id));
       } else {
         console.error("Delete failed:", data.message);
         alert(data.message || "Failed to delete game");
@@ -351,10 +357,7 @@ const GameLibrary = () => {
       <div className="added-games-container">
         {userGames.length > 0 ? (
           userGames.map((game) => (
-            <div 
-              key={game.id}
-              className="added-game"
-            >
+            <div key={game.id} className="added-game">
               {game.name}
               <div className="game-hover-card">
                 <div onClick={() => handleGameClick(game)}>
@@ -369,7 +372,9 @@ const GameLibrary = () => {
             </div>
           ))
         ) : (
-          <p>No games in your library yet. Click '+ Add Game' to get started!</p>
+          <p>
+            No games in your library yet. Click '+ Add Game' to get started!
+          </p>
         )}
       </div>
 
@@ -423,29 +428,26 @@ const GameLibrary = () => {
         </div>
       )}
 
-    {contextMenu.visible && (
-      <div
-        ref={contextMenuRef}
-        className="context-menu"
-        style={{
-          position: 'fixed',
-          top: `${contextMenu.y}px`,
-          left: `${contextMenu.x}px`,
-        }}
-      >
-        <div className="context-menu-item" onClick={deleteGame}>
-          Delete Game
+      {contextMenu.visible && (
+        <div
+          ref={contextMenuRef}
+          className="context-menu"
+          style={{
+            position: "fixed",
+            top: `${contextMenu.y}px`,
+            left: `${contextMenu.x}px`,
+          }}
+        >
+          <div className="context-menu-item" onClick={deleteGame}>
+            Delete Game
+          </div>
         </div>
-      </div>
-    )}
-    {gameStats && (
-        <GameStats 
-          gameStats={gameStats}
-          onClose={() => setGameStats(null)}
-        />
-    )}
-    {statsLoading && <div className="loading">Loading game details...</div>}
-    {statsError && <div className="error">{statsError}</div>}
+      )}
+      {gameStats && (
+        <GameStats gameStats={gameStats} onClose={() => setGameStats(null)} />
+      )}
+      {statsLoading && <div className="loading">Loading game details...</div>}
+      {statsError && <div className="error">{statsError}</div>}
     </div>
   );
 };

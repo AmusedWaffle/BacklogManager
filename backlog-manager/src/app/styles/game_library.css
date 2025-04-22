@@ -209,7 +209,7 @@ body {
 
 .added-game {
   cursor: context-menu;
-  user-select: none; 
+  user-select: none;
 }
 
 .stats-loading,
@@ -222,7 +222,7 @@ body {
   padding: 20px;
   border-radius: 5px;
   z-index: 101;
-  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
 .stats-error {
@@ -248,7 +248,7 @@ body {
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 4px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   width: 200px;
   z-index: 10;
 }

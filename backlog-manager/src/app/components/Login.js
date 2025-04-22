@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import "../styles/login.css";
 
 const Login = () => {
-
   ///defines the form we'll send to backend
   const [formData, setFormData] = useState({
     email: "",
@@ -67,7 +66,8 @@ const Login = () => {
           onChange={handleChange}
           required
         />
-        <br /><br />
+        <br />
+        <br />
 
         <label htmlFor="password">Password:</label>
         <input
@@ -77,7 +77,8 @@ const Login = () => {
           onChange={handleChange}
           required
         />
-        <br /><br />
+        <br />
+        <br />
 
         <input type="submit" value="Login" />
       </form>

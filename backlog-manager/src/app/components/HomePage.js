@@ -57,19 +57,31 @@ const HomePage = () => {
       </div>
 
       <div className="info-container">
-        <div className="info-box"><b><u>About</u></b>
-          <p>Welcome to Raging Rails! We are a backlog manager for your backlog of video games!</p>
-            <p>We can keep track of your games, but also provide you with a unique solution to tackling them with our Rankings feature!</p>
-          
-        </div>
-        <div className="info-box"><b><u>Ranking</u></b>
+        <div className="info-box">
+          <b>
+            <u>About</u>
+          </b>
           <p>
-            Our Rankings feature uses the games you provide us in your library, 
+            Welcome to Raging Rails! We are a backlog manager for your backlog
+            of video games!
+          </p>
+          <p>
+            We can keep track of your games, but also provide you with a unique
+            solution to tackling them with our Rankings feature!
+          </p>
+        </div>
+        <div className="info-box">
+          <b>
+            <u>Ranking</u>
+          </b>
+          <p>
+            Our Rankings feature uses the games you provide us in your library,
             combined with a set of preferences on the Create Rankings page.
           </p>
           <p>
-            Once you give us your games and preferences, we'll generate a Ranking of the games in
-            your library so you have a better of how to tackle your backlog of video games!
+            Once you give us your games and preferences, we'll generate a
+            Ranking of the games in your library so you have a better of how to
+            tackle your backlog of video games!
           </p>
         </div>
       </div>
