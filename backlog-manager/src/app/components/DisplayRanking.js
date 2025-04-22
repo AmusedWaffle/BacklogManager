@@ -23,21 +23,24 @@ const DisplayRanking = () => {
   const fetchRanking = async (token) => {
     try {
       setLoading(true);
-      const response = await fetch("http://128.113.126.87:5000/receive-ranking", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        "http://128.113.126.87:5000/receive-ranking",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ token }),
         },
-        body: JSON.stringify({ token }),
-      });
+      );
 
       const data = await response.json();
       if (response.ok) {
         // Ensure games have both id and name
-        const validatedGames = (data.ranked_games || []).map(game => ({
+        const validatedGames = (data.ranked_games || []).map((game) => ({
           id: game.id || `temp-${Math.random().toString(36).substr(2, 9)}`,
           name: game.name || `Unknown Game`,
-          ...game
+          ...game,
         }));
         setGames(validatedGames);
       } else {
@@ -60,26 +63,29 @@ const DisplayRanking = () => {
     try {
       setStatsLoading(true);
       setStatsError(null);
-      
-      const response = await fetch("http://128.113.126.87:5000/get-game-stats", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+
+      const response = await fetch(
+        "http://128.113.126.87:5000/get-game-stats",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            token,
+            game_id: gameId,
+            game_name: gameName,
+          }),
         },
-        body: JSON.stringify({ 
-          token,
-          game_id: gameId,
-          game_name: gameName
-        }),
-      });
+      );
 
       const data = await response.json();
-      
+
       if (response.ok) {
         setGameStats({
           ...data.game_stats,
           id: gameId,
-          title: gameName
+          title: gameName,
         });
       } else {
         throw new Error(data.message || "Failed to fetch game stats");
@@ -103,7 +109,7 @@ const DisplayRanking = () => {
   const renderGame = (game, index) => {
     const rank = index + 1;
     let placeClass = "";
-    
+
     if (rank === 1) placeClass = "frst-plce";
     else if (rank === 2) placeClass = "scnd-plce";
     else if (rank === 3) placeClass = "thrd-plce";
@@ -112,27 +118,35 @@ const DisplayRanking = () => {
     else placeClass = "remaining-game";
 
     const renderHeading = () => {
-      switch(rank) {
-        case 1: return <h1>#{rank}:</h1>;
-        case 2: return <h2>#{rank}:</h2>;
-        case 3: return <h3>#{rank}:</h3>;
-        case 4: return <h4>#{rank}:</h4>;
-        case 5: return <h5>#{rank}:</h5>;
-        default: return <h6>#{rank}:</h6>;
+      switch (rank) {
+        case 1:
+          return <h1>#{rank}:</h1>;
+        case 2:
+          return <h2>#{rank}:</h2>;
+        case 3:
+          return <h3>#{rank}:</h3>;
+        case 4:
+          return <h4>#{rank}:</h4>;
+        case 5:
+          return <h5>#{rank}:</h5>;
+        default:
+          return <h6>#{rank}:</h6>;
       }
     };
 
     return (
-      <div 
-        key={game.id} 
+      <div
+        key={game.id}
         className={`${placeClass} has-hover-card`}
         onClick={() => handleGameClick(game)}
       >
         {renderHeading()}
-        <button onClick={(e) => {
-          e.stopPropagation();
-          handleGameClick(game);
-        }}>
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            handleGameClick(game);
+          }}
+        >
           {game.name || `Game ${rank}`}
         </button>
         <div className="hover-card">
@@ -168,16 +182,18 @@ const DisplayRanking = () => {
             <div className="top-3">
               {topGames.map((game, index) => renderGame(game, index))}
             </div>
-            
+
             {games.length > 3 && (
               <div className="bottom-4-5">
                 {middleGames.map((game, index) => renderGame(game, index + 3))}
               </div>
             )}
-            
+
             {games.length > 5 && (
               <div className="remaining-games">
-                {remainingGames.map((game, index) => renderGame(game, index + 5))}
+                {remainingGames.map((game, index) =>
+                  renderGame(game, index + 5),
+                )}
               </div>
             )}
           </>
@@ -187,18 +203,13 @@ const DisplayRanking = () => {
       </div>
 
       {gameStats && (
-        <GameStats
-          gameStats={gameStats} 
-          onClose={() => setGameStats(null)} 
-        />
+        <GameStats gameStats={gameStats} onClose={() => setGameStats(null)} />
       )}
 
       {statsLoading && (
         <div className="stats-loading">Loading game details...</div>
       )}
-      {statsError && (
-        <div className="stats-error">{statsError}</div>
-      )}
+      {statsError && <div className="stats-error">{statsError}</div>}
     </div>
   );
 };
