@@ -26,8 +26,8 @@ Frontend:
 1. Clone the repository
 2. Set up a virtual environment (optional but recommended)
 3. Install dependencies
-4. Set up your PostgreSQL database
-5. Run the backend server
+4. Set up a database in PostgreSQL and change the app.config in backlogmain.py to match your 'databaseserver://user:password@databasehost/database_name'
+5. Run the backend server ('python3 backlogmain.py' in a terminal)
 
 ## Features
 * User registration and login system
