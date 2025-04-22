@@ -4,7 +4,10 @@ import { useRouter } from "next/navigation";
 import "../styles/create_ranking.css";
 
 const CreateRanking = () => {
+    // Remnant of trying to figure out React routing
     const router = useRouter();
+
+    // Data structure to hold user preferences
     const [preferences, setPreferences] = useState({
       genres: [],
       completionTime: null,
@@ -12,6 +15,8 @@ const CreateRanking = () => {
       platforms: [],
       useReviews: false
     });
+
+    // Booleans for loading states
     const [showDropdown, setShowDropdown] = useState(false);
     const [loading, setLoading] = useState(true);
     const [submitLoading, setSubmitLoading] = useState(false);
@@ -118,6 +123,8 @@ const CreateRanking = () => {
       setSubmitLoading(true);
       setSubmitError(null);
 
+      const token = localStorage.getItem("token");
+
       // Send data to backend
       try {
         const response = await fetch("http://128.113.126.87:5000/parse-preferences", {
@@ -164,6 +171,8 @@ const CreateRanking = () => {
     // Allows user to save their current selected preferences as default
     const saveDefaultPreferences = async () => {
       
+      const token = localStorage.getItem("token");
+
       // Send preferences data to backend
       try {
         const response = await fetch("http://128.113.126.87:5000/save-default-preferences", {
@@ -198,30 +207,30 @@ const CreateRanking = () => {
 
     // Keeps track of which preferences have been selected
     const isSelected = (type, value) => preferences[type].includes(value);
-
+    
     return (
       <div className="create-ranking-container">
         <div className="main-header">
           <h1>Create Ranking</h1>
           {(
-            preferences.genres.length > 0 || 
-            preferences.esrbRatings.length > 0 || 
-            preferences.platforms.length > 0 || 
+            (preferences.genres && preferences.genres.length > 0) || 
+            (preferences.esrbRatings && preferences.esrbRatings.length > 0) || 
+            (preferences.platforms && preferences.platforms.length > 0) || 
             preferences.completionTime
           ) && (
             <div className="selected-preferences">
               <h3>Selected Preferences:</h3>
-              {preferences.genres.length > 0 && (
+              {(preferences.genres && preferences.genres.length > 0) && (
                 <div>
                   <strong>Genres:</strong> {preferences.genres.join(", ")}
                 </div>
               )}
-              {preferences.esrbRatings.length > 0 && (
+              {(preferences.esrbRatings && preferences.esrbRatings.length > 0) && (
                 <div>
                   <strong>ESRB Ratings:</strong> {preferences.esrbRatings.join(", ")}
                 </div>
               )}
-              {preferences.platforms.length > 0 && (
+              {(preferences.platforms && preferences.platforms.length > 0) && (
                 <div>
                   <strong>Platforms:</strong> {preferences.platforms.join(", ")}
                 </div>
