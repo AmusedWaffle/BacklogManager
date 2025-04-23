@@ -211,6 +211,24 @@ def search_games():
     games = [{'id': game['id'], 'name': game['name']} for game in results]
     return jsonify({'results': games})
 
+@app.route('/get-default-preferences', methods=['POST'])
+def get_default_preferences():
+    data = request.json
+    token = data['token']
+    user = Users.query.filter_by(session_token=token).first()
+    
+    #check if user exists
+    if not user:
+        return jsonify({'error': 'Invalid token'}), 401
+    
+    preferences = Preferences.query.filter_by(email=user.email).first()
+
+    if preferences:
+        return jsonify({'preferences': preferences.preferences})
+    else:
+        return jsonify({'error': 'No preferences found'}), 404
+    
+
 @app.route('/save-default-preferences', methods=['POST'])
 def save_default_preferences():
     """API route to save user preferences to the database:
