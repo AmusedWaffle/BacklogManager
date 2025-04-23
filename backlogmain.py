@@ -15,21 +15,13 @@ app = Flask(__name__)
 CORS(app)
 
 # Connection: MAKE SURE TO REPLACE USERNAME:PASSWORD WITH THE ONE SET UP ON YOUR OWN DEVICE
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://user:1234@localhost/backlog_manager'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://username:password@localhost/backlog_manager'
 
 db = SQLAlchemy(app)
 
 RAWG_QUERY_URL = "https://api.rawg.io/api/games"
 RAWG_GAME_STAT = "https://api.rawg.io/api/games/{}"
 API_KEY = "1af69e1cf8664df59d23e49cd5aca2ea"
-
-'''
-example use of RAWG API call
-url = f"https://api.rawg.io/api/platforms?key={API_KEY}"
-response = requests.get(url)
-data = response.json()
-print(data)
-'''
 
 # Creates tables in the database (one-time setup for now)
 with app.app_context():
@@ -175,7 +167,7 @@ def delete_game():
 
 @app.route('/get-games-library', methods=['POST', 'OPTIONS'])
 def get_game_library():
-    """API route to add game for a user: http://127.0.0.1:5000/get-games-library."""
+    """API route to get a user's game library: http://127.0.0.1:5000/get-games-library."""
     if request.method == 'OPTIONS':
         return '', 200
     data = request.json
@@ -199,7 +191,8 @@ def get_game_library():
 
 @app.route('/search-games', methods=['POST'])
 def search_games():
-    """API route to add game for a user: http://127.0.0.1:5000/search-games."""
+    """API route to search for games using RAWG API:
+    http://127.0.0.1:5000/search-games."""
     data = request.json
     search_query = data['query']
     params = {
@@ -213,6 +206,9 @@ def search_games():
 
 @app.route('/get-default-preferences', methods=['POST'])
 def get_default_preferences():
+    """API route to get a user's default preferences from the database:
+    http://127.0.0.1:5000/save-default-preferences.
+    """
     data = request.json
     token = data['token']
     user = Users.query.filter_by(session_token=token).first()
