@@ -35,9 +35,12 @@ Frontend:
 1. Clone the repository
 2. Set up a virtual environment (optional but recommended)
 3. Install dependencies on your machine or virtual environment
-4. Set up a database in PostgreSQL and change the app.config in backlogmain.py to match your 'databaseserver://user:password@databasehost/database_name'
-5. Change the CORS origin to your frontend URL
-6. Run the backend server ('python3 backlogmain.py' in a terminal)
+4. Set up a PostgreSQL database and connect
+   - ```app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://USERNAME:PASSWORD@database_host/database_name'```
+6. Change the CORS origin to your frontend URL
+   - ```CORS(app, resources={r"/*": {"origins": "http://your_address"}})```
+8. Run the backend
+   - ```python3 backlogmain.py```
 
 ## Frontend Setup & Installation
 1. Clone the repository
